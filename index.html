@@ -24,6 +24,34 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes ken {
+      from { transform: scale(1.08); }
+      to { transform: scale(1); }
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    @keyframes glow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(212,175,110,.35); }
+      50% { box-shadow: 0 0 28px 2px rgba(212,175,110,.28); }
+    }
+    @keyframes floaty {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes ring {
+      from { transform: scale(.6); opacity: .55; }
+      to { transform: scale(1.8); opacity: 0; }
+    }
+    @keyframes slidePhone {
+      from { opacity: 0; transform: translateY(40px) scale(.96); }
+      to { opacity: 1; transform: none; }
+    }
     body {
       font-family: Manrope, system-ui, sans-serif;
       background: var(--ink);
@@ -90,11 +118,17 @@
     .hero {
       position: relative; min-height: 92svh;
       display: grid; place-items: end start;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0;
       background:
         linear-gradient(180deg, rgba(7,16,22,.25) 0%, rgba(7,16,22,.55) 48%, #071016 100%),
         url("img/almouj-marina.jpg") center/cover no-repeat;
+      animation: ken 22s ease-out both;
+      transform-origin: center 40%;
     }
-    .hero-inner { padding: 0 0 72px; width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .hero-inner { position: relative; z-index: 1; padding: 0 0 72px; width: min(1180px, calc(100% - 32px)); margin: 0 auto; animation: fadeUp .9s ease both; }
     .kicker {
       color: var(--gold); letter-spacing: .32em; font-size: 11px; text-transform: uppercase;
       margin-bottom: 14px;
@@ -116,7 +150,9 @@
       background: transparent; border: 0; color: white; padding: 14px 12px; outline: none; font: inherit; min-width: 0; width: 100%;
     }
     .search button {
-      background: linear-gradient(180deg, #f0d7a3, #c49a4c);
+      background: linear-gradient(90deg, #f0d7a3, #c49a4c, #f0d7a3);
+      background-size: 200% 100%;
+      animation: shimmer 3.2s linear infinite;
       color: #1a1208; border: 0; border-radius: 12px; padding: 12px 22px;
       font-weight: 700; cursor: pointer; white-space: nowrap; min-height: 48px;
     }
@@ -132,8 +168,23 @@
     .card {
       background: #0e1d24; border: 1px solid rgba(255,255,255,.06);
       border-radius: 22px; overflow: hidden; position: relative;
+      cursor: pointer;
+      animation: fadeUp .8s ease both;
+      transition: transform .45s ease, border-color .3s ease, box-shadow .45s ease;
     }
-    .card .ph { height: 210px; background-size: cover; background-position: center; position: relative; }
+    .card:nth-child(1) { animation-delay: .05s }
+    .card:nth-child(2) { animation-delay: .12s }
+    .card:nth-child(3) { animation-delay: .18s }
+    .card:nth-child(4) { animation-delay: .24s }
+    .card:nth-child(5) { animation-delay: .3s }
+    .card:nth-child(6) { animation-delay: .36s }
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(212,175,110,.45);
+      box-shadow: 0 24px 50px rgba(0,0,0,.35);
+    }
+    .card .ph { height: 210px; background-size: cover; background-position: center; position: relative; transition: transform .8s ease; }
+    .card:hover .ph { transform: scale(1.07); }
     .badge {
       position: absolute; top: 14px; left: 14px;
       background: rgba(7,16,22,.7); border: 1px solid var(--line);
@@ -151,7 +202,8 @@
     }
 
     .comms { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; }
-    .comm { min-height: 240px; border-radius: 22px; overflow: hidden; position: relative; background-size: cover; background-position: center; }
+    .comm { min-height: 240px; border-radius: 22px; overflow: hidden; position: relative; background-size: cover; background-position: center; transition: transform .5s ease, filter .5s ease; }
+    .comm:hover { transform: scale(1.03); filter: saturate(1.15); }
     .comm span {
       position: absolute; inset: auto 16px 16px 16px;
       font-family: "Cormorant Garamond", serif; font-size: 28px;
@@ -175,7 +227,9 @@
     }
     .big-call {
       display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(180deg, #f0d7a3, #c49a4c);
+      background: linear-gradient(90deg, #f0d7a3, #c49a4c, #f0d7a3);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite, glow 2.8s ease-in-out infinite;
       color: #1a1208; border: 0; border-radius: 999px;
       padding: 14px 22px; font-weight: 700; cursor: pointer; font-size: 14px;
     }
@@ -188,11 +242,12 @@
       color: var(--gold-2); padding: 10px 14px 10px 10px; border-radius: 999px;
       cursor: pointer; box-shadow: 0 12px 40px rgba(0,0,0,.4);
       max-width: calc(100vw - 28px);
+      animation: floaty 3.4s ease-in-out infinite, glow 2.6s ease-in-out infinite;
     }
     .fab img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
     .pulse {
       position: absolute; left: 10px; width: 42px; height: 42px; border-radius: 50%;
-      border: 1px solid var(--gold); animation: pulse 2s infinite;
+      border: 1px solid var(--gold); animation: ring 2s infinite;
     }
     @keyframes pulse {
       from { transform: scale(1); opacity: .7; }
@@ -207,6 +262,7 @@
       padding-bottom: max(16px, env(safe-area-inset-bottom));
     }
     .overlay.show { display: flex; }
+    .overlay.show .phone { animation: slidePhone .45s ease both; }
     .phone {
       width: min(420px, 100%);
       max-height: 100%;
@@ -343,7 +399,7 @@
           <option>Rent</option>
           <option>Buy / Invest</option>
         </select>
-        <button onclick="openCall()">Ask Layla</button>
+        <button onclick="askFromSearch()">Ask Layla</button>
       </div>
       <div class="stats">
         <div><b>8</b> live listings in this mock</div>
@@ -360,7 +416,7 @@
         <p>Taken from the current OmanEstate listings — rewritten as a private desk, not a classifieds wall.</p>
       </div>
       <div class="grid">
-        <article class="card">
+        <article class="card" onclick="openCall('almouj')">
           <div class="ph" style="background-image:url('img/almouj-apartments.jpg')">
             <span class="badge">Rent · Al Mouj</span>
           </div>
@@ -368,10 +424,10 @@
             <h3>Sea-view 2 bedroom, furnished</h3>
             <div class="price">OMR 650 / month</div>
             <div class="meta"><span>2 bed · 2 bath</span><span>1,150 ft²</span><span>Malik Shawal</span></div>
-            <button class="ask" onclick="openCall('almouj')">Ask Layla about this home</button>
+            <button class="ask" type="button">Ask Layla about this home</button>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="openCall('villa')">
           <div class="ph" style="background-image:url('img/muscat-luxury.jpg')">
             <span class="badge">Sale · Vacant</span>
           </div>
@@ -379,10 +435,10 @@
             <h3>Luxury villa, private garden</h3>
             <div class="price">OMR 185,000</div>
             <div class="meta"><span>4 bed · 5 bath</span><span>3,400 ft²</span><span>Shiyma Osman</span></div>
-            <button class="ask" onclick="openCall('villa')">Ask Layla about this home</button>
+            <button class="ask" type="button">Ask Layla about this home</button>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="openCall('seeb')">
           <div class="ph" style="background-image:url('img/muscat-courtyard.jpg')">
             <span class="badge">Sale · Seeb</span>
           </div>
@@ -390,10 +446,10 @@
             <h3>Family townhouse + maid’s room</h3>
             <div class="price">OMR 98,500</div>
             <div class="meta"><span>3 bed · 4 bath</span><span>2,100 ft²</span><span>Mohnish Keswani</span></div>
-            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+            <button class="ask" type="button">Ask Layla about this home</button>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="openCall('onebed')">
           <div class="ph" style="background-image:url('img/interior-1.jpg')">
             <span class="badge">Sale · High yield</span>
           </div>
@@ -401,10 +457,10 @@
             <h3>High-floor 1 bedroom</h3>
             <div class="price">OMR 42,000</div>
             <div class="meta"><span>1 bed · 2 bath</span><span>820 ft²</span><span>Tarik Horani</span></div>
-            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+            <button class="ask" type="button">Ask Layla about this home</button>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="openCall('ruwi')">
           <div class="ph" style="background-image:url('img/interior-2.jpg')">
             <span class="badge">Rent · Ruwi</span>
           </div>
@@ -412,10 +468,10 @@
             <h3>Furnished studio · 2 months free</h3>
             <div class="price">OMR 280 / month</div>
             <div class="meta"><span>Studio</span><span>540 ft²</span><span>Rakesh Tolani</span></div>
-            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+            <button class="ask" type="button">Ask Layla about this home</button>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="openCall('coastal')">
           <div class="ph" style="background-image:url('img/salalah.jpg')">
             <span class="badge">Rent · Bawshar / Sohar</span>
           </div>
@@ -423,7 +479,7 @@
             <h3>Coastal apartments</h3>
             <div class="price">OMR 380 – 420 / month</div>
             <div class="meta"><span>2–3 bed</span><span>Shiyma Osman · Rakesh Tolani</span></div>
-            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+            <button class="ask" type="button">Ask Layla about this home</button>
           </div>
         </article>
       </div>
@@ -437,9 +493,9 @@
         <p>Same cities already named on the current site — presented as destinations, not tiles.</p>
       </div>
       <div class="comms">
-        <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/almouj-aerial.jpg')"><span>Al Mouj, Muscat</span></div>
-        <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/salalah.jpg')"><span>Salalah</span></div>
-        <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/muscat-luxury.jpg')"><span>Seeb · Bawshar</span></div>
+        <div class="comm" onclick="openCall('almouj')" style="cursor:pointer;background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/almouj-aerial.jpg')"><span>Al Mouj, Muscat</span></div>
+        <div class="comm" onclick="openCall('coastal')" style="cursor:pointer;background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/salalah.jpg')"><span>Salalah</span></div>
+        <div class="comm" onclick="openCall('seeb')" style="cursor:pointer;background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/muscat-luxury.jpg')"><span>Seeb · Bawshar</span></div>
       </div>
     </div>
   </section>
@@ -525,14 +581,80 @@
       { t: 31.0, who: 'Layla', text: 'Yield play: high-floor 1-bed at OMR 42,000. Ruwi studio from OMR 280 with two months free.' }
     ];
 
-    const almoujClip = [
-      { t: 0.2, who: 'Layla', text: 'This listing is live. Al Mouj Muscat. Furnished two-bedroom, marina view.' },
-      { t: 7.0, who: 'Layla', text: 'OMR 650 a month. Two baths. Ready to move. Listed by Malik Shawal.' }
-    ];
+    const scripts = {
+      demo: {
+        src: 'audio/live-call-demo.mp3',
+        hit: '<div class="hit"><span>Matching Muscat inventory</span><b>Live desk</b></div>',
+        lines: demoLines
+      },
+      inventory: {
+        src: 'audio/layla-inventory.mp3',
+        hit: '<div class="hit"><span>Full board tonight</span><b>6 homes</b></div>',
+        lines: inventoryClip
+      },
+      almouj: {
+        src: 'audio/layla-almouj.mp3',
+        hit: '<div class="hit"><span>Al Mouj 2BR sea view</span><b>OMR 650/mo</b></div>',
+        lines: [
+          { t: 0.2, who: 'Layla', text: 'This listing is live. Al Mouj Muscat. Furnished two-bedroom, marina view.' },
+          { t: 7.0, who: 'Layla', text: 'OMR 650 a month. Two baths. Ready to move. Listed by Malik Shawal.' }
+        ]
+      },
+      villa: {
+        src: 'audio/layla-villa.mp3',
+        hit: '<div class="hit"><span>Luxury villa + garden</span><b>OMR 185,000</b></div>',
+        lines: [
+          { t: 0.2, who: 'Layla', text: 'Vacant luxury villa with a private garden. Four bedrooms, five baths.' },
+          { t: 7.0, who: 'Layla', text: 'Asking OMR 185,000. Listed by Shiyma Osman. I can hold a private viewing this week.' }
+        ]
+      },
+      seeb: {
+        src: 'audio/layla-seeb.mp3',
+        hit: '<div class="hit"><span>Seeb townhouse + maid</span><b>OMR 98,500</b></div>',
+        lines: [
+          { t: 0.2, who: 'Layla', text: 'This one is in Seeb. Family townhouse with a maid’s room.' },
+          { t: 6.5, who: 'Layla', text: 'Three bedrooms. Asking OMR 98,500. Agent Mohnish Keswani.' }
+        ]
+      },
+      onebed: {
+        src: 'audio/layla-onebed.mp3',
+        hit: '<div class="hit"><span>High-floor 1 bedroom</span><b>OMR 42,000</b></div>',
+        lines: [
+          { t: 0.2, who: 'Layla', text: 'Yield play. High-floor one bedroom, two baths, 820 square feet.' },
+          { t: 6.2, who: 'Layla', text: 'Asking OMR 42,000. Listed by Tarik Horani. Easy to rent for income.' }
+        ]
+      },
+      ruwi: {
+        src: 'audio/layla-ruwi.mp3',
+        hit: '<div class="hit"><span>Ruwi furnished studio</span><b>OMR 280/mo</b></div>',
+        lines: [
+          { t: 0.2, who: 'Layla', text: 'Ruwi studio, fully furnished. Two months free on the rent.' },
+          { t: 6.0, who: 'Layla', text: 'OMR 280 a month. Agent Rakesh Tolani. Good first landing in Muscat.' }
+        ]
+      },
+      coastal: {
+        src: 'audio/layla-coastal.mp3',
+        hit: '<div class="hit"><span>Bawshar / Sohar coastal</span><b>OMR 380–420</b></div>',
+        lines: [
+          { t: 0.2, who: 'Layla', text: 'Coastal apartments in Bawshar and Sohar. Two to three bedrooms.' },
+          { t: 6.4, who: 'Layla', text: 'OMR 380 to 420 a month. Tell me your commute and I will match you.' }
+        ]
+      }
+    };
 
     let shown = 0;
     let lines = demoLines;
 
+    function askFromSearch() {
+      const q = (document.getElementById('q').value || '').toLowerCase();
+      if (q.includes('al mouj') || q.includes('650') || q.includes('sea')) return openCall('almouj');
+      if (q.includes('villa') || q.includes('185') || q.includes('garden')) return openCall('villa');
+      if (q.includes('seeb') || q.includes('town')) return openCall('seeb');
+      if (q.includes('ruwi') || q.includes('studio')) return openCall('ruwi');
+      if (q.includes('bawshar') || q.includes('sohar') || q.includes('coast')) return openCall('coastal');
+      if (q.includes('1 bed') || q.includes('42')) return openCall('onebed');
+      return openCall('inventory');
+    }
     function toggleMenu() {
       document.getElementById('drawer').classList.toggle('open');
     }
@@ -545,31 +667,44 @@
       shown = 0;
       status.textContent = 'Connecting to inventory…';
       phone.classList.remove('paused');
-      if (kind === 'almouj') {
-        player.src = 'audio/layla-almouj.mp3';
-        lines = almoujClip;
-        hits.innerHTML = '<div class="hit"><span>Al Mouj 2BR sea view</span><b>OMR 650/mo</b></div>';
-      } else if (kind === 'villa') {
-        player.src = 'audio/layla-inventory.mp3';
-        lines = inventoryClip;
-      } else {
-        player.src = 'audio/live-call-demo.mp3';
-        lines = demoLines;
-      }
+      const pack = scripts[kind] || scripts.demo;
+      player.src = pack.src;
+      lines = pack.lines;
+      hits.innerHTML = pack.hit || '';
+      window._pack = pack;
       setTimeout(() => {
         status.textContent = 'Live · reading OmanEstate listings';
-        player.play().catch(() => {
-          status.textContent = 'Tap Pause then play — browser blocked autoplay';
-        });
-      }, 700);
+        const start = player.play();
+        if (start && start.catch) {
+          start.catch(() => speakFallback(pack));
+        }
+        player.onerror = () => speakFallback(pack);
+      }, 500);
+    }
+    function speakFallback(pack) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+      const text = (pack.lines || []).map(l => l.text).join('. ');
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.96; u.pitch = 1.02;
+      const voices = speechSynthesis.getVoices();
+      const v = voices.find(x => /female|samantha|google uk english female|zira|susan/i.test(x.name)) || voices.find(x => /en/i.test(x.lang));
+      if (v) u.voice = v;
+      status.textContent = 'Live · reading this listing';
+      speechSynthesis.speak(u);
     }
 
     function endCall() {
       player.pause(); player.currentTime = 0;
+      try { window.speechSynthesis.cancel(); } catch (e) {}
       document.body.classList.remove('lock');
       document.getElementById('call').classList.remove('show');
     }
     function toggleHold() {
+      if (window.speechSynthesis && speechSynthesis.speaking && !player.src) {
+        if (speechSynthesis.paused) { speechSynthesis.resume(); phone.classList.remove('paused'); }
+        else { speechSynthesis.pause(); phone.classList.add('paused'); }
+        return;
+      }
       if (player.paused) { player.play(); phone.classList.remove('paused'); }
       else { player.pause(); phone.classList.add('paused'); }
     }
