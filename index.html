@@ -4,538 +4,281 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#071016" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>OmanEstate Private — VIP Mockup</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #071016;
-      --navy: #0c1c24;
-      --panel: #12262f;
-      --line: rgba(212, 175, 110, .22);
-      --gold: #d4af6e;
-      --gold-2: #f0d7a3;
-      --sand: #e8d7b8;
-      --ivory: #f6f1e8;
-      --mute: #9aa8b0;
-      --ok: #7dcea0;
+      --ink:#071016; --navy:#0c1c24; --panel:#12262f;
+      --line:rgba(212,175,110,.22); --gold:#d4af6e; --gold-2:#f0d7a3;
+      --sand:#e8d7b8; --ivory:#f6f1e8; --mute:#9aa8b0; --ok:#7dcea0;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to { opacity: 1; transform: none; }
-    }
-    @keyframes ken {
-      from { transform: scale(1.08); }
-      to { transform: scale(1); }
-    }
-    @keyframes shimmer {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    @keyframes glow {
-      0%,100% { box-shadow: 0 0 0 0 rgba(212,175,110,.35); }
-      50% { box-shadow: 0 0 28px 2px rgba(212,175,110,.28); }
-    }
-    @keyframes floaty {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    @keyframes ring {
-      from { transform: scale(.6); opacity: .55; }
-      to { transform: scale(1.8); opacity: 0; }
-    }
-    @keyframes slidePhone {
-      from { opacity: 0; transform: translateY(40px) scale(.96); }
-      to { opacity: 1; transform: none; }
-    }
-    body {
-      font-family: Manrope, system-ui, sans-serif;
-      background: var(--ink);
-      color: var(--ivory);
-      overflow-x: hidden;
-    }
-    body.lock { overflow: hidden; height: 100dvh; }
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-    button, select, input { font: inherit; }
-    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+    body { font-family:Manrope,system-ui,sans-serif; background:var(--ink); color:var(--ivory); overflow-x:hidden; }
+    body.lock { overflow:hidden; height:100dvh; }
+    a { color:inherit; text-decoration:none; }
+    img { max-width:100%; display:block; }
+    button,select,input { font:inherit; }
+    .wrap { width:min(1180px, calc(100% - 32px)); margin:0 auto; }
 
-    .ribbon {
-      background: linear-gradient(90deg, #3a2a12, #7a5a28 40%, #3a2a12);
-      color: #1a1208;
-      text-align: center;
-      font-size: 12px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      padding: 9px 16px;
-      font-weight: 700;
-    }
-    nav {
-      position: sticky; top: 0; z-index: 40;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px;
-      padding: 12px 20px;
-      padding-left: max(20px, env(safe-area-inset-left));
-      padding-right: max(20px, env(safe-area-inset-right));
-      background: rgba(7,16,22,.78);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-right { display: flex; align-items: center; gap: 10px; }
-    .burger {
-      display: none; width: 44px; height: 44px; border-radius: 12px;
-      border: 1px solid var(--line); background: transparent; color: var(--ivory);
-      cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 5px;
-    }
-    .burger span { width: 18px; height: 1.5px; background: var(--gold-2); display: block; }
-    .mobile-drawer {
-      display: none; position: fixed; inset: 64px 12px auto 12px; z-index: 45;
-      background: #0e1d24; border: 1px solid var(--line); border-radius: 18px;
-      padding: 12px; flex-direction: column; gap: 4px;
-    }
-    .mobile-drawer a { padding: 12px 14px; border-radius: 12px; color: var(--sand); }
-    .mobile-drawer.open { display: flex; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .mark {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(145deg, #f0d7a3, #9a6f2e);
-      color: #1a1208; display: grid; place-items: center;
-      font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 22px;
-    }
-    .brand b { font-size: 15px; letter-spacing: .04em; }
-    .brand small { display: block; color: var(--gold); letter-spacing: .28em; font-size: 9px; text-transform: uppercase; }
-    .nav-links { display: flex; gap: 22px; color: var(--mute); font-size: 13px; }
-    .nav-cta {
-      border: 1px solid var(--gold);
-      color: var(--gold-2);
-      padding: 9px 16px; border-radius: 999px; font-size: 12px; letter-spacing: .08em;
-    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+    @keyframes ken { from{transform:scale(1.1)} to{transform:scale(1)} }
+    @keyframes shimmer { to{background-position:200% 50%} }
+    @keyframes glow { 0%,100%{box-shadow:0 0 0 0 rgba(212,175,110,.3)} 50%{box-shadow:0 0 24px 2px rgba(212,175,110,.28)} }
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes ring { from{transform:scale(.6);opacity:.5} to{transform:scale(1.75);opacity:0} }
+    @keyframes slidePhone { from{opacity:0;transform:translateY(36px) scale(.96)} to{opacity:1;transform:none} }
+    @keyframes sheetIn { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:none} }
+    @keyframes eq { 0%,100%{height:6px} 50%{height:26px} }
+    @keyframes starPop { from{transform:scale(.6);opacity:0} to{transform:none;opacity:1} }
 
-    .hero {
-      position: relative; min-height: 92svh;
-      display: grid; place-items: end start;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: ""; position: absolute; inset: 0;
-      background:
-        linear-gradient(180deg, rgba(7,16,22,.25) 0%, rgba(7,16,22,.55) 48%, #071016 100%),
-        url("img/almouj-marina.jpg") center/cover no-repeat;
-      animation: ken 22s ease-out both;
-      transform-origin: center 40%;
-    }
-    .hero-inner { position: relative; z-index: 1; padding: 0 0 72px; width: min(1180px, calc(100% - 32px)); margin: 0 auto; animation: fadeUp .9s ease both; }
-    .kicker {
-      color: var(--gold); letter-spacing: .32em; font-size: 11px; text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-    h1 {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(42px, 7vw, 86px);
-      line-height: .92; font-weight: 600; max-width: 16ch;
-    }
-    h1 em { font-style: italic; color: var(--gold-2); }
-    .hero p.lead { max-width: 46ch; color: #d7ddd8; margin: 18px 0 28px; font-size: 16px; line-height: 1.6; }
-    .search {
-      display: grid; grid-template-columns: 1.4fr 1fr auto;
-      gap: 8px; background: rgba(12,28,36,.72);
-      border: 1px solid var(--line); padding: 10px; border-radius: 18px;
-      backdrop-filter: blur(16px); max-width: 760px; width: 100%;
-    }
-    .search input, .search select {
-      background: transparent; border: 0; color: white; padding: 14px 12px; outline: none; font: inherit; min-width: 0; width: 100%;
-    }
-    .search button {
-      background: linear-gradient(90deg, #f0d7a3, #c49a4c, #f0d7a3);
-      background-size: 200% 100%;
-      animation: shimmer 3.2s linear infinite;
-      color: #1a1208; border: 0; border-radius: 12px; padding: 12px 22px;
-      font-weight: 700; cursor: pointer; white-space: nowrap; min-height: 48px;
-    }
-    .stats { display: flex; flex-wrap: wrap; gap: 22px 28px; margin-top: 28px; color: var(--sand); font-size: 13px; }
-    .stats b { display: block; font-family: "Cormorant Garamond", serif; font-size: clamp(22px, 4vw, 28px); color: white; }
+    .ribbon { background:linear-gradient(90deg,#3a2a12,#7a5a28 40%,#3a2a12); color:#1a1208; text-align:center; font-size:11px; letter-spacing:.16em; text-transform:uppercase; padding:9px 12px; font-weight:700; }
+    nav { position:sticky; top:0; z-index:40; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 20px; padding-left:max(20px,env(safe-area-inset-left)); padding-right:max(20px,env(safe-area-inset-right)); background:rgba(7,16,22,.82); backdrop-filter:blur(18px); border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:12px; cursor:pointer; }
+    .mark { width:36px; height:36px; border-radius:10px; background:linear-gradient(145deg,#f0d7a3,#9a6f2e); color:#1a1208; display:grid; place-items:center; font-family:"Cormorant Garamond",serif; font-weight:700; font-size:22px; }
+    .brand small { display:block; color:var(--gold); letter-spacing:.28em; font-size:9px; text-transform:uppercase; }
+    .nav-links { display:flex; gap:22px; color:var(--mute); font-size:13px; }
+    .nav-cta { border:1px solid var(--gold); color:var(--gold-2); padding:9px 16px; border-radius:999px; font-size:12px; }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .burger { display:none; width:44px; height:44px; border-radius:12px; border:1px solid var(--line); background:transparent; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; }
+    .burger span { width:18px; height:1.5px; background:var(--gold-2); display:block; }
+    .mobile-drawer { display:none; position:fixed; inset:64px 12px auto 12px; z-index:45; background:#0e1d24; border:1px solid var(--line); border-radius:18px; padding:12px; flex-direction:column; }
+    .mobile-drawer a, .mobile-drawer button { padding:12px 14px; border-radius:12px; color:var(--sand); background:none; border:0; text-align:left; cursor:pointer; }
+    .mobile-drawer.open { display:flex; }
 
-    .section { padding: 84px 0; }
-    .sec-h { display: flex; justify-content: space-between; align-items: end; margin-bottom: 28px; gap: 20px; }
-    h2 { font-family: "Cormorant Garamond", serif; font-size: clamp(30px, 5vw, 42px); font-weight: 600; }
-    .sec-h p { color: var(--mute); max-width: 42ch; font-size: 14px; }
+    #home { display:block; }
+    #detail { display:none; animation:sheetIn .45s ease both; }
+    body.detail-on #home { display:none; }
+    body.detail-on #detail { display:block; }
 
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .card {
-      background: #0e1d24; border: 1px solid rgba(255,255,255,.06);
-      border-radius: 22px; overflow: hidden; position: relative;
-      cursor: pointer;
-      animation: fadeUp .8s ease both;
-      transition: transform .45s ease, border-color .3s ease, box-shadow .45s ease;
-    }
-    .card:nth-child(1) { animation-delay: .05s }
-    .card:nth-child(2) { animation-delay: .12s }
-    .card:nth-child(3) { animation-delay: .18s }
-    .card:nth-child(4) { animation-delay: .24s }
-    .card:nth-child(5) { animation-delay: .3s }
-    .card:nth-child(6) { animation-delay: .36s }
-    .card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(212,175,110,.45);
-      box-shadow: 0 24px 50px rgba(0,0,0,.35);
-    }
-    .card .ph { height: 210px; background-size: cover; background-position: center; position: relative; transition: transform .8s ease; }
-    .card:hover .ph { transform: scale(1.07); }
-    .badge {
-      position: absolute; top: 14px; left: 14px;
-      background: rgba(7,16,22,.7); border: 1px solid var(--line);
-      color: var(--gold-2); font-size: 10px; letter-spacing: .14em;
-      text-transform: uppercase; padding: 6px 9px; border-radius: 999px;
-    }
-    .card .body { padding: 16px 16px 18px; }
-    .card h3 { font-size: 16px; margin-bottom: 6px; }
-    .price { color: var(--gold); font-weight: 700; margin-bottom: 8px; }
-    .meta { color: var(--mute); font-size: 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; }
-    .ask {
-      margin-top: 14px; width: 100%;
-      background: transparent; border: 1px solid var(--gold);
-      color: var(--gold-2); border-radius: 12px; padding: 12px; cursor: pointer; font: inherit; min-height: 46px;
-    }
+    .hero { position:relative; min-height:92svh; display:grid; place-items:end start; overflow:hidden; }
+    .hero::before { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(7,16,22,.25),rgba(7,16,22,.55) 48%,#071016), url("img/almouj-marina.jpg") center/cover no-repeat; animation:ken 22s ease-out both; }
+    .hero-inner { position:relative; z-index:1; padding:0 0 72px; width:min(1180px,calc(100% - 32px)); margin:0 auto; animation:fadeUp .9s ease both; }
+    .kicker { color:var(--gold); letter-spacing:.28em; font-size:11px; text-transform:uppercase; margin-bottom:14px; }
+    h1 { font-family:"Cormorant Garamond",serif; font-size:clamp(40px,7vw,86px); line-height:.92; font-weight:600; max-width:16ch; }
+    h1 em { font-style:italic; color:var(--gold-2); }
+    .lead { max-width:46ch; color:#d7ddd8; margin:18px 0 28px; font-size:16px; line-height:1.6; }
+    .search { display:grid; grid-template-columns:1.4fr 1fr auto; gap:8px; background:rgba(12,28,36,.72); border:1px solid var(--line); padding:10px; border-radius:18px; backdrop-filter:blur(16px); max-width:760px; width:100%; }
+    .search input,.search select { background:transparent; border:0; color:white; padding:14px 12px; outline:none; min-width:0; width:100%; }
+    .gold-btn { background:linear-gradient(90deg,#f0d7a3,#c49a4c,#f0d7a3); background-size:200% 100%; animation:shimmer 3.2s linear infinite; color:#1a1208; border:0; border-radius:12px; padding:12px 22px; font-weight:700; cursor:pointer; min-height:48px; }
+    .stats { display:flex; flex-wrap:wrap; gap:22px 28px; margin-top:28px; color:var(--sand); font-size:13px; }
+    .stats b { display:block; font-family:"Cormorant Garamond",serif; font-size:clamp(22px,4vw,28px); color:white; }
 
-    .comms { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; }
-    .comm { min-height: 240px; border-radius: 22px; overflow: hidden; position: relative; background-size: cover; background-position: center; transition: transform .5s ease, filter .5s ease; }
-    .comm:hover { transform: scale(1.03); filter: saturate(1.15); }
-    .comm span {
-      position: absolute; inset: auto 16px 16px 16px;
-      font-family: "Cormorant Garamond", serif; font-size: 28px;
-    }
+    .section { padding:84px 0; }
+    .sec-h { display:flex; justify-content:space-between; align-items:end; margin-bottom:28px; gap:20px; }
+    h2 { font-family:"Cormorant Garamond",serif; font-size:clamp(30px,5vw,42px); font-weight:600; }
+    .sec-h p { color:var(--mute); max-width:42ch; font-size:14px; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .card { background:#0e1d24; border:1px solid rgba(255,255,255,.06); border-radius:22px; overflow:hidden; cursor:pointer; animation:fadeUp .8s ease both; transition:transform .45s ease,border-color .3s,box-shadow .45s; }
+    .card:hover { transform:translateY(-10px); border-color:rgba(212,175,110,.45); box-shadow:0 24px 50px rgba(0,0,0,.35); }
+    .card .ph { height:210px; background-size:cover; background-position:center; position:relative; transition:transform .8s; }
+    .card:hover .ph { transform:scale(1.07); }
+    .badge { position:absolute; top:14px; left:14px; background:rgba(7,16,22,.7); border:1px solid var(--line); color:var(--gold-2); font-size:10px; letter-spacing:.12em; text-transform:uppercase; padding:6px 9px; border-radius:999px; }
+    .views-chip { position:absolute; top:14px; right:14px; background:rgba(7,16,22,.72); color:#fff; font-size:11px; padding:6px 9px; border-radius:999px; }
+    .card .body { padding:16px 16px 18px; }
+    .card h3 { font-size:16px; margin-bottom:6px; }
+    .price { color:var(--gold); font-weight:700; margin-bottom:8px; }
+    .meta { color:var(--mute); font-size:12px; display:flex; flex-wrap:wrap; gap:8px 12px; }
+    .rank-row { display:flex; align-items:center; gap:8px; margin:8px 0 12px; color:var(--gold-2); font-size:12px; }
+    .ask { margin-top:6px; width:100%; background:transparent; border:1px solid var(--gold); color:var(--gold-2); border-radius:12px; padding:12px; cursor:pointer; min-height:46px; }
 
-    .ai-band {
-      background:
-        radial-gradient(800px 300px at 10% 0%, rgba(212,175,110,.12), transparent 60%),
-        #0a171d;
-      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    }
-    .ai-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: center; }
-    .ai-photo {
-      width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 28px;
-      border: 1px solid var(--line); filter: saturate(.92);
-    }
-    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 24px; }
-    .pills span {
-      border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px;
-      font-size: 12px; color: var(--sand);
-    }
-    .big-call {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(90deg, #f0d7a3, #c49a4c, #f0d7a3);
-      background-size: 200% 100%;
-      animation: shimmer 3s linear infinite, glow 2.8s ease-in-out infinite;
-      color: #1a1208; border: 0; border-radius: 999px;
-      padding: 14px 22px; font-weight: 700; cursor: pointer; font-size: 14px;
-    }
+    .comms { display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:14px; }
+    .comm { min-height:240px; border-radius:22px; overflow:hidden; position:relative; background-size:cover; background-position:center; transition:transform .5s,filter .5s; cursor:pointer; }
+    .comm:hover { transform:scale(1.03); filter:saturate(1.15); }
+    .comm span { position:absolute; inset:auto 16px 16px; font-family:"Cormorant Garamond",serif; font-size:28px; }
+    .ai-band { background:radial-gradient(800px 300px at 10% 0%,rgba(212,175,110,.12),transparent 60%),#0a171d; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .ai-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:40px; align-items:center; }
+    .ai-photo { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:28px; border:1px solid var(--line); }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 24px; }
+    .pills span { border:1px solid var(--line); border-radius:999px; padding:8px 12px; font-size:12px; color:var(--sand); }
+    .big-call { display:inline-flex; align-items:center; gap:10px; background:linear-gradient(90deg,#f0d7a3,#c49a4c,#f0d7a3); background-size:200% 100%; animation:shimmer 3s linear infinite,glow 2.8s ease-in-out infinite; color:#1a1208; border:0; border-radius:999px; padding:14px 22px; font-weight:700; cursor:pointer; }
 
-    footer { padding: 40px 0 calc(90px + env(safe-area-inset-bottom)); color: var(--mute); font-size: 13px; border-top: 1px solid rgba(255,255,255,.05); }
-    .fab {
-      position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); z-index: 50;
-      display: flex; align-items: center; gap: 10px;
-      background: #111; border: 1px solid var(--gold);
-      color: var(--gold-2); padding: 10px 14px 10px 10px; border-radius: 999px;
-      cursor: pointer; box-shadow: 0 12px 40px rgba(0,0,0,.4);
-      max-width: calc(100vw - 28px);
-      animation: floaty 3.4s ease-in-out infinite, glow 2.6s ease-in-out infinite;
-    }
-    .fab img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
-    .pulse {
-      position: absolute; left: 10px; width: 42px; height: 42px; border-radius: 50%;
-      border: 1px solid var(--gold); animation: ring 2s infinite;
-    }
-    @keyframes pulse {
-      from { transform: scale(1); opacity: .7; }
-      to { transform: scale(1.55); opacity: 0; }
-    }
+    footer { padding:40px 0 calc(96px + env(safe-area-inset-bottom)); color:var(--mute); font-size:13px; border-top:1px solid rgba(255,255,255,.05); }
+    .fab { position:fixed; right:max(14px,env(safe-area-inset-right)); bottom:max(14px,env(safe-area-inset-bottom)); z-index:50; display:flex; align-items:center; gap:10px; background:#111; border:1px solid var(--gold); color:var(--gold-2); padding:10px 14px 10px 10px; border-radius:999px; cursor:pointer; animation:floaty 3.4s ease-in-out infinite,glow 2.6s ease-in-out infinite; }
+    .fab img { width:42px; height:42px; border-radius:50%; object-fit:cover; }
+    .pulse { position:absolute; left:10px; width:42px; height:42px; border-radius:50%; border:1px solid var(--gold); animation:ring 2s infinite; }
 
-    .overlay {
-      position: fixed; inset: 0; z-index: 80; display: none;
-      background: rgba(3,8,11,.72); backdrop-filter: blur(10px);
-      align-items: center; justify-content: center; padding: 16px;
-      padding-top: max(16px, env(safe-area-inset-top));
-      padding-bottom: max(16px, env(safe-area-inset-bottom));
-    }
-    .overlay.show { display: flex; }
-    .overlay.show .phone { animation: slidePhone .45s ease both; }
-    .phone {
-      width: min(420px, 100%);
-      max-height: 100%;
-      overflow: auto;
-      background: linear-gradient(180deg, #16303a, #0b171c);
-      border: 1px solid var(--line);
-      border-radius: 32px; padding: 22px 20px 18px;
-      box-shadow: 0 30px 80px rgba(0,0,0,.45);
-    }
-    .phone-top { text-align: center; color: var(--mute); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
-    .avatar-wrap { display: grid; place-items: center; margin: 18px 0 8px; }
-    .avatar-wrap img {
-      width: 118px; height: 118px; border-radius: 50%; object-fit: cover;
-      border: 2px solid var(--gold);
-    }
-    .phone h3 { text-align: center; font-family: "Cormorant Garamond", serif; font-size: 30px; }
-    .status { text-align: center; color: var(--ok); font-size: 12px; margin-bottom: 14px; }
-    .wave { display: flex; justify-content: center; gap: 3px; height: 28px; align-items: end; margin: 6px 0 14px; }
-    .wave i {
-      width: 3px; background: var(--gold); display: block; border-radius: 3px;
-      animation: eq 1s ease-in-out infinite; height: 8px;
-    }
-    .wave i:nth-child(2) { animation-delay: .1s }
-    .wave i:nth-child(3) { animation-delay: .18s }
-    .wave i:nth-child(4) { animation-delay: .05s }
-    .wave i:nth-child(5) { animation-delay: .22s }
-    .wave i:nth-child(6) { animation-delay: .12s }
-    .wave i:nth-child(7) { animation-delay: .3s }
-    @keyframes eq {
-      0%,100% { height: 6px; }
-      50% { height: 26px; }
-    }
-    .paused .wave i { animation: none; height: 6px; }
-    .transcript {
-      background: rgba(0,0,0,.28); border-radius: 16px; padding: 12px;
-      min-height: 148px; max-height: 180px; overflow: auto; font-size: 13px; line-height: 1.45;
-    }
-    .transcript .who { color: var(--gold); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
-    .transcript p { margin: 0 0 10px; color: #dfe6e8; }
-    .phone-actions { display: flex; gap: 10px; margin-top: 14px; }
-    .phone-actions button {
-      flex: 1; border: 0; border-radius: 14px; padding: 12px; cursor: pointer; font-weight: 700;
-    }
-    .end { background: #8b2a2a; color: white; }
-    .hold { background: #1d333c; color: var(--ivory); border: 1px solid rgba(255,255,255,.08) !important; }
-    .mini { margin-top: 12px; display: grid; gap: 8px; }
-    .mini b { font-size: 12px; color: var(--gold); }
-    .hit {
-      display: flex; justify-content: space-between; gap: 8px;
-      background: #102029; border: 1px solid rgba(212,175,110,.15);
-      border-radius: 12px; padding: 8px 10px; font-size: 12px;
-    }
+    /* DETAIL */
+    .back { display:inline-flex; gap:8px; color:var(--gold-2); font-size:13px; margin:18px 0; cursor:pointer; background:none; border:0; }
+    .d-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:28px; align-items:start; padding-bottom:80px; }
+    .gallery { position:relative; }
+    .hero-shot { width:100%; height:min(62vh,520px); object-fit:cover; border-radius:24px; border:1px solid var(--line); animation:fadeUp .5s ease both; }
+    .thumbs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px; }
+    .thumbs img { height:78px; width:100%; object-fit:cover; border-radius:12px; cursor:pointer; border:1px solid transparent; opacity:.75; }
+    .thumbs img.on { border-color:var(--gold); opacity:1; }
+    .d-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0; }
+    .kpi { background:#0e1d24; border:1px solid rgba(255,255,255,.06); border-radius:16px; padding:12px; }
+    .kpi b { display:block; font-family:"Cormorant Garamond",serif; font-size:22px; }
+    .kpi span { color:var(--mute); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+    .stars { color:var(--gold-2); letter-spacing:2px; animation:starPop .5s ease both; }
+    .bar { height:6px; background:#1a2c34; border-radius:99px; overflow:hidden; margin-top:8px; }
+    .bar i { display:block; height:100%; width:0; background:linear-gradient(90deg,#c49a4c,#f0d7a3); border-radius:99px; transition:width 1s ease; }
+    .amen { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 20px; }
+    .amen span { background:#102029; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font-size:12px; color:var(--sand); }
+    .agent { display:flex; gap:12px; align-items:center; background:#0e1d24; border:1px solid rgba(255,255,255,.06); border-radius:18px; padding:14px; margin:16px 0; }
+    .agent img { width:54px; height:54px; border-radius:50%; object-fit:cover; }
+    .d-actions { display:flex; flex-wrap:wrap; gap:10px; }
+    .ghost { background:transparent; border:1px solid var(--line); color:var(--ivory); border-radius:12px; padding:12px 16px; cursor:pointer; }
 
-    @media (max-width: 1100px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      .comms { grid-template-columns: 1fr 1fr; }
-      .comms .comm:first-child { grid-column: 1 / -1; min-height: 280px; }
-    }
-    @media (max-width: 880px) {
-      .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .burger { display: flex; }
-      .ai-grid, .search { grid-template-columns: 1fr; }
-      .hero { min-height: 100svh; }
-      .hero-inner { padding-bottom: 96px; }
-      .ai-photo { max-height: 420px; width: min(100%, 420px); margin: 0 auto; aspect-ratio: 3/4; }
-      .sec-h { flex-direction: column; align-items: flex-start; }
-      .ribbon { font-size: 10px; letter-spacing: .12em; padding: 8px 10px; }
-    }
-    @media (max-width: 640px) {
-      .grid, .comms { grid-template-columns: 1fr; }
-      .comms .comm:first-child { grid-column: auto; }
-      .search button { width: 100%; }
-      .stats { gap: 16px; }
-      .stats > div { flex: 1 1 30%; min-width: 96px; }
-      .card .ph { height: 200px; }
-      .fab-copy { display: none; }
-      .fab { padding: 8px; }
-      .section { padding: 56px 0; }
-      h1 { font-size: clamp(36px, 12vw, 58px); }
-      .phone { border-radius: 24px; padding: 16px 14px 14px; }
-      .avatar-wrap img { width: 92px; height: 92px; }
-      .transcript { min-height: 120px; max-height: 28vh; }
-    }
-    @media (max-width: 400px) {
-      .wrap, .hero-inner { width: calc(100% - 24px); }
-      .kicker { letter-spacing: .18em; font-size: 10px; }
-    }
-    @media (min-width: 1400px) {
-      .wrap, .hero-inner { width: min(1240px, calc(100% - 64px)); }
-    }
+    .overlay { position:fixed; inset:0; z-index:80; display:none; background:rgba(3,8,11,.72); backdrop-filter:blur(10px); align-items:center; justify-content:center; padding:16px; }
+    .overlay.show { display:flex; }
+    .overlay.show .phone { animation:slidePhone .45s ease both; }
+    .phone { width:min(420px,100%); max-height:100%; overflow:auto; background:linear-gradient(180deg,#16303a,#0b171c); border:1px solid var(--line); border-radius:32px; padding:22px 20px 18px; }
+    .phone-top { text-align:center; color:var(--mute); font-size:11px; letter-spacing:.2em; text-transform:uppercase; }
+    .avatar-wrap { display:grid; place-items:center; margin:18px 0 8px; }
+    .avatar-wrap img { width:118px; height:118px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); }
+    .phone h3 { text-align:center; font-family:"Cormorant Garamond",serif; font-size:30px; }
+    .status { text-align:center; color:var(--ok); font-size:12px; margin-bottom:14px; }
+    .wave { display:flex; justify-content:center; gap:3px; height:28px; align-items:end; margin:6px 0 14px; }
+    .wave i { width:3px; background:var(--gold); display:block; border-radius:3px; animation:eq 1s ease-in-out infinite; height:8px; }
+    .wave i:nth-child(2){animation-delay:.1s} .wave i:nth-child(3){animation-delay:.18s} .wave i:nth-child(4){animation-delay:.05s}
+    .paused .wave i { animation:none; height:6px; }
+    .transcript { background:rgba(0,0,0,.28); border-radius:16px; padding:12px; min-height:148px; max-height:180px; overflow:auto; font-size:13px; line-height:1.45; }
+    .transcript .who { color:var(--gold); font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+    .transcript p { margin:0 0 10px; color:#dfe6e8; }
+    .phone-actions { display:flex; gap:10px; margin-top:14px; }
+    .phone-actions button { flex:1; border:0; border-radius:14px; padding:12px; cursor:pointer; font-weight:700; }
+    .end { background:#8b2a2a; color:white; }
+    .hold { background:#1d333c; color:var(--ivory); }
+    .hit { display:flex; justify-content:space-between; gap:8px; background:#102029; border:1px solid rgba(212,175,110,.15); border-radius:12px; padding:8px 10px; font-size:12px; margin-top:10px; }
+
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(2,1fr)} .comms{grid-template-columns:1fr 1fr} .comms .comm:first-child{grid-column:1/-1;min-height:260px} .d-grid{grid-template-columns:1fr} }
+    @media (max-width:880px){ .nav-links,.nav-cta{display:none} .burger{display:flex} .ai-grid,.search{grid-template-columns:1fr} .hero{min-height:100svh} .sec-h{flex-direction:column;align-items:flex-start} }
+    @media (max-width:640px){ .grid,.comms,.d-kpis{grid-template-columns:1fr} .comms .comm:first-child{grid-column:auto} .gold-btn{width:100%} .fab-copy{display:none} .section{padding:56px 0} .hero-shot{height:42vh} .thumbs img{height:58px} }
+    @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
   </style>
 </head>
 <body>
-  <div class="ribbon">VIP Concept Mockup · Live AI Call Agent · Built from OmanEstate inventory</div>
+  <div class="ribbon">VIP concept · Open a residence first · Call Layla only when you want her</div>
   <nav>
-    <div class="brand">
+    <div class="brand" onclick="goHome()">
       <div class="mark">O</div>
-      <div>
-        <b>OmanEstate</b>
-        <small>Private</small>
-      </div>
+      <div><b>OmanEstate</b><small>Private</small></div>
     </div>
     <div class="nav-links">
-      <a href="#residences">Residences</a>
-      <a href="#communities">Communities</a>
-      <a href="#advisor">AI Advisor</a>
-      <a href="#desk">Muscat Desk</a>
+      <a href="#residences" onclick="goHome()">Residences</a>
+      <a href="#communities" onclick="goHome()">Communities</a>
+      <a href="#advisor" onclick="goHome()">AI Advisor</a>
     </div>
     <div class="nav-right">
-      <a class="nav-cta" href="#" onclick="openCall();return false;">Call Layla · Live</a>
-      <button class="burger" id="burger" aria-label="Open menu" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-      </button>
+      <a class="nav-cta" href="#" onclick="openCall('demo');return false;">Call Layla · Desk</a>
+      <button class="burger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
   <div class="mobile-drawer" id="drawer">
-    <a href="#residences" onclick="toggleMenu()">Residences</a>
-    <a href="#communities" onclick="toggleMenu()">Communities</a>
-    <a href="#advisor" onclick="toggleMenu()">AI Advisor</a>
-    <a href="#desk" onclick="toggleMenu()">Muscat Desk</a>
-    <a href="#" onclick="toggleMenu();openCall();return false;">Call Layla · Live</a>
+    <a href="#residences" onclick="goHome();toggleMenu()">Residences</a>
+    <a href="#communities" onclick="goHome();toggleMenu()">Communities</a>
+    <button onclick="toggleMenu();openCall('demo')">Call Layla · Desk</button>
   </div>
 
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="kicker">Muscat · Al Mouj · Seeb · Salalah</div>
-      <h1>The private door<br>to <em>Oman.</em></h1>
-      <p class="lead">A quieter estate house. Speak to Layla — she reads this portal live and tells you what is actually available, at which price, in which community.</p>
-      <div class="search">
-        <input id="q" placeholder="Describe the home — “2 bed Al Mouj under 700 OMR”" />
-        <select>
-          <option>Live in Oman</option>
-          <option>Rent</option>
-          <option>Buy / Invest</option>
-        </select>
-        <button onclick="askFromSearch()">Ask Layla</button>
-      </div>
-      <div class="stats">
-        <div><b>8</b> live listings in this mock</div>
-        <div><b>OMR</b> pricing from the current site</div>
-        <div><b>AI call</b> trained on this inventory</div>
-      </div>
-    </div>
-  </header>
-
-  <section class="section" id="residences">
-    <div class="wrap">
-      <div class="sec-h">
-        <h2>On the board tonight</h2>
-        <p>Taken from the current OmanEstate listings — rewritten as a private desk, not a classifieds wall.</p>
-      </div>
-      <div class="grid">
-        <article class="card" onclick="openCall('almouj')">
-          <div class="ph" style="background-image:url('img/almouj-apartments.jpg')">
-            <span class="badge">Rent · Al Mouj</span>
-          </div>
-          <div class="body">
-            <h3>Sea-view 2 bedroom, furnished</h3>
-            <div class="price">OMR 650 / month</div>
-            <div class="meta"><span>2 bed · 2 bath</span><span>1,150 ft²</span><span>Malik Shawal</span></div>
-            <button class="ask" type="button">Ask Layla about this home</button>
-          </div>
-        </article>
-        <article class="card" onclick="openCall('villa')">
-          <div class="ph" style="background-image:url('img/muscat-luxury.jpg')">
-            <span class="badge">Sale · Vacant</span>
-          </div>
-          <div class="body">
-            <h3>Luxury villa, private garden</h3>
-            <div class="price">OMR 185,000</div>
-            <div class="meta"><span>4 bed · 5 bath</span><span>3,400 ft²</span><span>Shiyma Osman</span></div>
-            <button class="ask" type="button">Ask Layla about this home</button>
-          </div>
-        </article>
-        <article class="card" onclick="openCall('seeb')">
-          <div class="ph" style="background-image:url('img/muscat-courtyard.jpg')">
-            <span class="badge">Sale · Seeb</span>
-          </div>
-          <div class="body">
-            <h3>Family townhouse + maid’s room</h3>
-            <div class="price">OMR 98,500</div>
-            <div class="meta"><span>3 bed · 4 bath</span><span>2,100 ft²</span><span>Mohnish Keswani</span></div>
-            <button class="ask" type="button">Ask Layla about this home</button>
-          </div>
-        </article>
-        <article class="card" onclick="openCall('onebed')">
-          <div class="ph" style="background-image:url('img/interior-1.jpg')">
-            <span class="badge">Sale · High yield</span>
-          </div>
-          <div class="body">
-            <h3>High-floor 1 bedroom</h3>
-            <div class="price">OMR 42,000</div>
-            <div class="meta"><span>1 bed · 2 bath</span><span>820 ft²</span><span>Tarik Horani</span></div>
-            <button class="ask" type="button">Ask Layla about this home</button>
-          </div>
-        </article>
-        <article class="card" onclick="openCall('ruwi')">
-          <div class="ph" style="background-image:url('img/interior-2.jpg')">
-            <span class="badge">Rent · Ruwi</span>
-          </div>
-          <div class="body">
-            <h3>Furnished studio · 2 months free</h3>
-            <div class="price">OMR 280 / month</div>
-            <div class="meta"><span>Studio</span><span>540 ft²</span><span>Rakesh Tolani</span></div>
-            <button class="ask" type="button">Ask Layla about this home</button>
-          </div>
-        </article>
-        <article class="card" onclick="openCall('coastal')">
-          <div class="ph" style="background-image:url('img/salalah.jpg')">
-            <span class="badge">Rent · Bawshar / Sohar</span>
-          </div>
-          <div class="body">
-            <h3>Coastal apartments</h3>
-            <div class="price">OMR 380 – 420 / month</div>
-            <div class="meta"><span>2–3 bed</span><span>Shiyma Osman · Rakesh Tolani</span></div>
-            <button class="ask" type="button">Ask Layla about this home</button>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="communities" style="padding-top:10px">
-    <div class="wrap">
-      <div class="sec-h">
-        <h2>Communities she knows</h2>
-        <p>Same cities already named on the current site — presented as destinations, not tiles.</p>
-      </div>
-      <div class="comms">
-        <div class="comm" onclick="openCall('almouj')" style="cursor:pointer;background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/almouj-aerial.jpg')"><span>Al Mouj, Muscat</span></div>
-        <div class="comm" onclick="openCall('coastal')" style="cursor:pointer;background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/salalah.jpg')"><span>Salalah</span></div>
-        <div class="comm" onclick="openCall('seeb')" style="cursor:pointer;background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/muscat-luxury.jpg')"><span>Seeb · Bawshar</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section ai-band" id="advisor">
-    <div class="wrap ai-grid">
-      <img class="ai-photo" src="img/layla.jpg" alt="Layla, OmanEstate private advisor" />
-      <div>
-        <div class="kicker">Integrated call agent</div>
-        <h2>Layla does not chat.<br>She answers the inventory.</h2>
-        <p style="color:#c9d2d6;margin-top:14px;line-height:1.7">
-          This is the demo you would ship. The voice is recorded against the live cards on this mock —
-          Al Mouj at OMR 650, the garden villa at OMR 185,000, Seeb townhouse at OMR 98,500.
-          No generic chatbot. She quotes this website.
-        </p>
-        <div class="pills">
-          <span>Live listing read</span><span>Budget match</span><span>Agent handoff</span>
-          <span>Viewing on Sultan Qaboos Street</span>
+  <div id="home">
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="kicker">Muscat · Al Mouj · Seeb · Salalah</div>
+        <h1>The private door<br>to <em>Oman.</em></h1>
+        <p class="lead">Open any residence for photos, views and ranking. Call Layla only when you want her to walk that file.</p>
+        <div class="search">
+          <input id="q" placeholder="Search — Al Mouj, villa, Seeb, Ruwi…" />
+          <select><option>Live in Oman</option><option>Rent</option><option>Buy / Invest</option></select>
+          <button class="gold-btn" onclick="filterCards()">Show homes</button>
         </div>
-        <button class="big-call" onclick="openCall()">▶ Play the live call</button>
+        <div class="stats">
+          <div><b>6</b> residences to open</div>
+          <div><b>OMR</b> from the current site</div>
+          <div><b>Layla</b> on request, not on every tap</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="residences">
+      <div class="wrap">
+        <div class="sec-h">
+          <h2>On the board tonight</h2>
+          <p>Tap a card to enter the residence — gallery, views and score first.</p>
+        </div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="communities" style="padding-top:10px">
+      <div class="wrap">
+        <div class="sec-h"><h2>Communities</h2><p>Same cities named on the current site.</p></div>
+        <div class="comms">
+          <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/almouj-aerial.jpg')" onclick="openDetail('almouj')"><span>Al Mouj, Muscat</span></div>
+          <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/salalah.jpg')" onclick="openDetail('coastal')"><span>Salalah</span></div>
+          <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/muscat-luxury.jpg')" onclick="openDetail('seeb')"><span>Seeb · Bawshar</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ai-band" id="advisor">
+      <div class="wrap ai-grid">
+        <img class="ai-photo" src="img/layla.jpg" alt="Layla" />
+        <div>
+          <div class="kicker">On-demand call agent</div>
+          <h2>Layla waits until you ask.</h2>
+          <p class="lead" style="margin-top:14px">Open the home. Read the file. Then put her on the private line for that listing only.</p>
+          <div class="pills"><span>Gallery first</span><span>Views + rank</span><span>Then voice</span></div>
+          <button class="big-call" onclick="openCall('demo')">▶ Preview the live desk call</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="detail">
+    <div class="wrap">
+      <button class="back" onclick="goHome()">← All residences</button>
+      <div class="d-grid">
+        <div class="gallery">
+          <img class="hero-shot" id="shot" alt="" />
+          <div class="thumbs" id="thumbs"></div>
+        </div>
+        <div>
+          <div class="kicker" id="dBadge"></div>
+          <h2 id="dTitle"></h2>
+          <div class="price" id="dPrice" style="font-size:22px;margin:8px 0 4px"></div>
+          <div class="meta" id="dMeta"></div>
+          <div class="d-kpis">
+            <div class="kpi"><span>Views tonight</span><b id="dViews">0</b></div>
+            <div class="kpi"><span>Private rank</span><b id="dRank">—</b><div class="stars" id="dStars"></div></div>
+            <div class="kpi"><span>Match score</span><b id="dScore">—</b><div class="bar"><i id="dBar"></i></div></div>
+          </div>
+          <p id="dBlurb" style="color:#c9d2d6;line-height:1.7;font-size:14px"></p>
+          <div class="amen" id="dAmen"></div>
+          <div class="agent">
+            <img src="img/layla.jpg" alt="" />
+            <div>
+              <b id="dAgent"></b>
+              <div style="color:var(--mute);font-size:12px">Listing agent · Muscat desk</div>
+            </div>
+          </div>
+          <div class="d-actions">
+            <button class="gold-btn" onclick="callThis()">Call Layla about this home</button>
+            <button class="ghost" onclick="goHome()">Keep browsing</button>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <footer id="desk">
     <div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
       <div>
         <strong style="color:white">OmanEstate Private</strong>
-        <p>Sultan Qaboos Street, Building 42, Muscat<br>+968 2400 0000 · support@omanestate.om</p>
+        <p>Sultan Qaboos Street, Building 42, Muscat<br>+968 2400 0000</p>
       </div>
-      <div>VIP mockup for proposal · Not the live production site<br>Open this file and press Call Layla.</div>
+      <div>VIP mockup · Open a card, then call if you want her.</div>
     </div>
   </footer>
 
-  <button class="fab" onclick="openCall()">
+  <button class="fab" onclick="openCall(currentId || 'demo')">
     <span class="pulse"></span>
     <img src="img/layla.jpg" alt="" />
     <div class="fab-copy" style="text-align:left">
-      <b style="display:block;font-size:12px">Layla is live</b>
-      <span style="font-size:11px;color:#cbb98a">Tap to start AI call</span>
+      <b style="display:block;font-size:12px">Layla</b>
+      <span style="font-size:11px;color:#cbb98a">Call when ready</span>
     </div>
   </button>
 
@@ -544,10 +287,10 @@
       <div class="phone-top">Private line · Encrypted desk</div>
       <div class="avatar-wrap"><img src="img/layla.jpg" alt=""></div>
       <h3>Layla</h3>
-      <div class="status" id="status">Connecting to inventory…</div>
+      <div class="status" id="status">Connecting…</div>
       <div class="wave" id="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="transcript" id="log"></div>
-      <div class="mini" id="hits"></div>
+      <div id="hits"></div>
       <div class="phone-actions">
         <button class="hold" onclick="toggleHold()">Pause</button>
         <button class="end" onclick="endCall()">End call</button>
@@ -557,180 +300,208 @@
   </div>
 
   <script>
+    const HOMES = {
+      almouj: {
+        title:'Sea-view 2 bedroom, furnished', price:'OMR 650 / month', badge:'Rent · Al Mouj',
+        meta:'2 bed · 2 bath · 1,150 ft²', agent:'Malik Shawal', views:1840, rank:'4.8', score:92,
+        imgs:['img/almouj-apartments.jpg','img/almouj-marina.jpg','img/almouj-aerial.jpg','img/interior-1.jpg'],
+        amen:['Marina view','Furnished','Covered parking','Gym access','Ready now'],
+        blurb:'Al Mouj Muscat. The apartment sits above the marina walk — evening light on the water, two baths, fully dressed for a relocation.',
+        src:'audio/layla-almouj.mp3',
+        lines:[
+          {t:.2,who:'Layla',text:'You opened the Al Mouj file. Furnished two-bedroom, marina view.'},
+          {t:7,who:'Layla',text:'OMR 650 a month. Listed by Malik Shawal. I can hold it for a viewing tomorrow.'}
+        ]
+      },
+      villa: {
+        title:'Luxury villa, private garden', price:'OMR 185,000', badge:'Sale · Vacant',
+        meta:'4 bed · 5 bath · 3,400 ft²', agent:'Shiyma Osman', views:960, rank:'4.9', score:96,
+        imgs:['img/muscat-luxury.jpg','img/muscat-courtyard.jpg','img/interior-1.jpg','img/almouj-aerial.jpg'],
+        amen:['Private garden','Maid suite','Quiet street','Vacant possession','Family compound feel'],
+        blurb:'A vacant four-bedroom with garden depth. Priced for a serious buyer, not a brochure fantasy.',
+        src:'audio/layla-villa.mp3',
+        lines:[
+          {t:.2,who:'Layla',text:'This is the garden villa. Four bedrooms, five baths, thirty-four hundred square feet.'},
+          {t:7,who:'Layla',text:'Asking one hundred eighty-five thousand rials. Shiyma Osman holds the file.'}
+        ]
+      },
+      seeb: {
+        title:'Family townhouse + maid’s room', price:'OMR 98,500', badge:'Sale · Seeb',
+        meta:'3 bed · 4 bath · 2,100 ft²', agent:'Mohnish Keswani', views:1275, rank:'4.6', score:88,
+        imgs:['img/muscat-courtyard.jpg','img/interior-2.jpg','img/muscat-luxury.jpg','img/interior-1.jpg'],
+        amen:['Maid’s room','School run easy','Courtyard','Family kitchen','Seeb location'],
+        blurb:'Seeb townhouse built for a household — extra bath, maid’s room, and a price that still leaves room to furnish.',
+        src:'audio/layla-seeb.mp3',
+        lines:[
+          {t:.2,who:'Layla',text:'Seeb family townhouse with a maid’s room. Three bedrooms, four baths.'},
+          {t:6.5,who:'Layla',text:'Asking ninety-eight thousand five hundred. Agent Mohnish Keswani.'}
+        ]
+      },
+      onebed: {
+        title:'High-floor 1 bedroom', price:'OMR 42,000', badge:'Sale · High yield',
+        meta:'1 bed · 2 bath · 820 ft²', agent:'Tarik Horani', views:2104, rank:'4.4', score:81,
+        imgs:['img/interior-1.jpg','img/interior-2.jpg','img/almouj-apartments.jpg','img/muscat-luxury.jpg'],
+        amen:['High floor','Light throughout','Low ticket','Easy to let','City access'],
+        blurb:'A compact yield play. Buy it for income, not for weekend entertaining.',
+        src:'audio/layla-onebed.mp3',
+        lines:[
+          {t:.2,who:'Layla',text:'High-floor one bedroom. Eight hundred twenty square feet, two baths.'},
+          {t:6.2,who:'Layla',text:'Asking forty-two thousand rials. Tarik Horani. Liquid and easy to rent.'}
+        ]
+      },
+      ruwi: {
+        title:'Furnished studio · 2 months free', price:'OMR 280 / month', badge:'Rent · Ruwi',
+        meta:'Studio · 540 ft²', agent:'Rakesh Tolani', views:3012, rank:'4.2', score:77,
+        imgs:['img/interior-2.jpg','img/interior-1.jpg','img/almouj-apartments.jpg','img/salalah.jpg'],
+        amen:['Furnished','2 months free','City core','Move-in ready','Soft landing'],
+        blurb:'Ruwi studio for a first month in Muscat. The two months free is the only reason it outranks prettier rooms.',
+        src:'audio/layla-ruwi.mp3',
+        lines:[
+          {t:.2,who:'Layla',text:'Ruwi studio, fully furnished, two months free on the rent.'},
+          {t:6,who:'Layla',text:'Two hundred eighty rials a month. Rakesh Tolani.'}
+        ]
+      },
+      coastal: {
+        title:'Coastal apartments', price:'OMR 380 – 420 / month', badge:'Rent · Bawshar / Sohar',
+        meta:'2–3 bed', agent:'Shiyma Osman · Rakesh Tolani', views:1540, rank:'4.5', score:84,
+        imgs:['img/salalah.jpg','img/almouj-marina.jpg','img/almouj-apartments.jpg','img/muscat-courtyard.jpg'],
+        amen:['Coastal air','2–3 bedrooms','Two agents on file','Flexible lease','Commute match'],
+        blurb:'Bawshar and Sohar stock for people who work along the coast. Tell Layla the office pin and she trims the list.',
+        src:'audio/layla-coastal.mp3',
+        lines:[
+          {t:.2,who:'Layla',text:'Coastal apartments in Bawshar and Sohar. Two to three bedrooms.'},
+          {t:6.4,who:'Layla',text:'Three hundred eighty to four hundred twenty a month. Give me your commute.'}
+        ]
+      }
+    };
+
+    const demoLines = [
+      {t:.4,who:'Layla',text:'OmanEstate private line. This is Layla. Which file shall I open?'},
+      {t:7.2,who:'Caller',text:'Walk the board. What is live tonight?'},
+      {t:16,who:'Layla',text:'Al Mouj at 650 a month. Villa at 185,000. Seeb townhouse at 98,500.'}
+    ];
+
+    let currentId = null;
     const player = document.getElementById('player');
     const log = document.getElementById('log');
     const hits = document.getElementById('hits');
     const status = document.getElementById('status');
     const phone = document.getElementById('phone');
+    let shown = 0, lines = demoLines;
 
-    const demoLines = [
-      { t: 0.4, who: 'Layla', text: 'OmanEstate private line. This is Layla. How may I help you this evening?' },
-      { t: 7.2, who: 'Caller', text: 'I am looking in Muscat. Two bedrooms, sea view if possible, under seven hundred rials a month.' },
-      { t: 16.0, who: 'Layla', text: 'Al Mouj Muscat. Furnished two-bedroom, marina view, OMR 650 a month. Agent Malik Shawal. Active now.' },
-      { t: 28.5, who: 'Caller', text: 'What if I decide to buy instead of rent?' },
-      { t: 33.2, who: 'Layla', text: 'A vacant four-bedroom villa at OMR 185,000 — Shiyma Osman. Or Seeb townhouse at OMR 98,500.' },
-      { t: 48.0, who: 'Caller', text: 'Hold the Al Mouj apartment and send the villa details.' },
-      { t: 53.2, who: 'Layla', text: 'Done. Priority viewing flagged. Villa brief on its way.' }
-    ];
-
-    const inventoryClip = [
-      { t: 0.3, who: 'Layla', text: 'Here is what is active on OmanEstate right now.' },
-      { t: 5.0, who: 'Layla', text: 'Al Mouj: furnished 2-bed sea view, OMR 650 / month, Malik Shawal.' },
-      { t: 14.0, who: 'Layla', text: 'Sale: vacant 4-bed villa, private garden, OMR 185,000, Shiyma Osman.' },
-      { t: 23.0, who: 'Layla', text: 'Seeb family townhouse, 3 bed + maid, OMR 98,500.' },
-      { t: 31.0, who: 'Layla', text: 'Yield play: high-floor 1-bed at OMR 42,000. Ruwi studio from OMR 280 with two months free.' }
-    ];
-
-    const scripts = {
-      demo: {
-        src: 'audio/live-call-demo.mp3',
-        hit: '<div class="hit"><span>Matching Muscat inventory</span><b>Live desk</b></div>',
-        lines: demoLines
-      },
-      inventory: {
-        src: 'audio/layla-inventory.mp3',
-        hit: '<div class="hit"><span>Full board tonight</span><b>6 homes</b></div>',
-        lines: inventoryClip
-      },
-      almouj: {
-        src: 'audio/layla-almouj.mp3',
-        hit: '<div class="hit"><span>Al Mouj 2BR sea view</span><b>OMR 650/mo</b></div>',
-        lines: [
-          { t: 0.2, who: 'Layla', text: 'This listing is live. Al Mouj Muscat. Furnished two-bedroom, marina view.' },
-          { t: 7.0, who: 'Layla', text: 'OMR 650 a month. Two baths. Ready to move. Listed by Malik Shawal.' }
-        ]
-      },
-      villa: {
-        src: 'audio/layla-villa.mp3',
-        hit: '<div class="hit"><span>Luxury villa + garden</span><b>OMR 185,000</b></div>',
-        lines: [
-          { t: 0.2, who: 'Layla', text: 'Vacant luxury villa with a private garden. Four bedrooms, five baths.' },
-          { t: 7.0, who: 'Layla', text: 'Asking OMR 185,000. Listed by Shiyma Osman. I can hold a private viewing this week.' }
-        ]
-      },
-      seeb: {
-        src: 'audio/layla-seeb.mp3',
-        hit: '<div class="hit"><span>Seeb townhouse + maid</span><b>OMR 98,500</b></div>',
-        lines: [
-          { t: 0.2, who: 'Layla', text: 'This one is in Seeb. Family townhouse with a maid’s room.' },
-          { t: 6.5, who: 'Layla', text: 'Three bedrooms. Asking OMR 98,500. Agent Mohnish Keswani.' }
-        ]
-      },
-      onebed: {
-        src: 'audio/layla-onebed.mp3',
-        hit: '<div class="hit"><span>High-floor 1 bedroom</span><b>OMR 42,000</b></div>',
-        lines: [
-          { t: 0.2, who: 'Layla', text: 'Yield play. High-floor one bedroom, two baths, 820 square feet.' },
-          { t: 6.2, who: 'Layla', text: 'Asking OMR 42,000. Listed by Tarik Horani. Easy to rent for income.' }
-        ]
-      },
-      ruwi: {
-        src: 'audio/layla-ruwi.mp3',
-        hit: '<div class="hit"><span>Ruwi furnished studio</span><b>OMR 280/mo</b></div>',
-        lines: [
-          { t: 0.2, who: 'Layla', text: 'Ruwi studio, fully furnished. Two months free on the rent.' },
-          { t: 6.0, who: 'Layla', text: 'OMR 280 a month. Agent Rakesh Tolani. Good first landing in Muscat.' }
-        ]
-      },
-      coastal: {
-        src: 'audio/layla-coastal.mp3',
-        hit: '<div class="hit"><span>Bawshar / Sohar coastal</span><b>OMR 380–420</b></div>',
-        lines: [
-          { t: 0.2, who: 'Layla', text: 'Coastal apartments in Bawshar and Sohar. Two to three bedrooms.' },
-          { t: 6.4, who: 'Layla', text: 'OMR 380 to 420 a month. Tell me your commute and I will match you.' }
-        ]
-      }
-    };
-
-    let shown = 0;
-    let lines = demoLines;
-
-    function askFromSearch() {
-      const q = (document.getElementById('q').value || '').toLowerCase();
-      if (q.includes('al mouj') || q.includes('650') || q.includes('sea')) return openCall('almouj');
-      if (q.includes('villa') || q.includes('185') || q.includes('garden')) return openCall('villa');
-      if (q.includes('seeb') || q.includes('town')) return openCall('seeb');
-      if (q.includes('ruwi') || q.includes('studio')) return openCall('ruwi');
-      if (q.includes('bawshar') || q.includes('sohar') || q.includes('coast')) return openCall('coastal');
-      if (q.includes('1 bed') || q.includes('42')) return openCall('onebed');
-      return openCall('inventory');
+    function renderGrid(filter) {
+      const q = (filter || '').toLowerCase();
+      const el = document.getElementById('grid');
+      el.innerHTML = Object.entries(HOMES).filter(([id,h]) =>
+        !q || (h.title+h.badge+h.price+h.agent).toLowerCase().includes(q)
+      ).map(([id,h],i) => `
+        <article class="card" style="animation-delay:${i*.08}s" onclick="openDetail('${id}')">
+          <div class="ph" style="background-image:url('${h.imgs[0]}')">
+            <span class="badge">${h.badge}</span>
+            <span class="views-chip">${h.views.toLocaleString()} views</span>
+          </div>
+          <div class="body">
+            <h3>${h.title}</h3>
+            <div class="price">${h.price}</div>
+            <div class="rank-row">★ ${h.rank} · match ${h.score}</div>
+            <div class="meta"><span>${h.meta}</span><span>${h.agent}</span></div>
+            <button class="ask" type="button">Open residence</button>
+          </div>
+        </article>`).join('');
     }
-    function toggleMenu() {
-      document.getElementById('drawer').classList.toggle('open');
+    renderGrid();
+
+    function filterCards(){ renderGrid(document.getElementById('q').value); document.getElementById('residences').scrollIntoView({behavior:'smooth'}); }
+    function toggleMenu(){ document.getElementById('drawer').classList.toggle('open'); }
+    function goHome(){
+      document.body.classList.remove('detail-on');
+      currentId = null;
+      document.getElementById('drawer').classList.remove('open');
+      window.scrollTo({top:0,behavior:'smooth'});
     }
-    function openCall(kind) {
+    function openDetail(id){
+      const h = HOMES[id]; if(!h) return;
+      currentId = id;
+      document.getElementById('drawer').classList.remove('open');
+      document.body.classList.add('detail-on');
+      document.getElementById('dBadge').textContent = h.badge;
+      document.getElementById('dTitle').textContent = h.title;
+      document.getElementById('dPrice').textContent = h.price;
+      document.getElementById('dMeta').textContent = h.meta;
+      document.getElementById('dRank').textContent = h.rank;
+      document.getElementById('dStars').textContent = '★★★★★'.slice(0, Math.round(+h.rank));
+      document.getElementById('dScore').textContent = h.score + '/100';
+      document.getElementById('dBlurb').textContent = h.blurb;
+      document.getElementById('dAgent').textContent = h.agent;
+      document.getElementById('dAmen').innerHTML = h.amen.map(a=>`<span>${a}</span>`).join('');
+      setShot(h.imgs[0]);
+      document.getElementById('thumbs').innerHTML = h.imgs.map((src,i)=>`<img src="${src}" class="${i===0?'on':''}" onclick="setShot('${src}', this)">`).join('');
+      animateViews(h.views);
+      requestAnimationFrame(()=> document.getElementById('dBar').style.width = h.score + '%');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function setShot(src, thumb){
+      document.getElementById('shot').src = src;
+      document.querySelectorAll('.thumbs img').forEach(t=>t.classList.remove('on'));
+      if (thumb) thumb.classList.add('on');
+    }
+    function animateViews(n){
+      const el = document.getElementById('dViews');
+      let cur = 0; const step = Math.max(1, Math.floor(n/28));
+      const t = setInterval(()=>{ cur+=step; if(cur>=n){cur=n;clearInterval(t);} el.textContent=cur.toLocaleString(); }, 20);
+    }
+    function callThis(){ openCall(currentId || 'demo'); }
+
+    function openCall(kind){
       document.getElementById('drawer').classList.remove('open');
       document.body.classList.add('lock');
       document.getElementById('call').classList.add('show');
-      log.innerHTML = '';
-      hits.innerHTML = '';
-      shown = 0;
-      status.textContent = 'Connecting to inventory…';
+      log.innerHTML=''; hits.innerHTML=''; shown=0;
+      status.textContent='Connecting to inventory…';
       phone.classList.remove('paused');
-      const pack = scripts[kind] || scripts.demo;
-      player.src = pack.src;
-      lines = pack.lines;
-      hits.innerHTML = pack.hit || '';
-      window._pack = pack;
-      setTimeout(() => {
-        status.textContent = 'Live · reading OmanEstate listings';
+      const home = HOMES[kind];
+      if (home){
+        player.src = home.src;
+        lines = home.lines;
+        hits.innerHTML = `<div class="hit"><span>${home.title}</span><b>${home.price}</b></div>`;
+      } else {
+        player.src = 'audio/live-call-demo.mp3';
+        lines = demoLines;
+        hits.innerHTML = `<div class="hit"><span>Private desk</span><b>Full board</b></div>`;
+      }
+      setTimeout(()=>{
+        status.textContent = 'Live · this file only';
         const start = player.play();
-        if (start && start.catch) {
-          start.catch(() => speakFallback(pack));
-        }
-        player.onerror = () => speakFallback(pack);
-      }, 500);
+        if (start && start.catch) start.catch(()=>speakFallback(lines));
+        player.onerror = ()=>speakFallback(lines);
+      }, 450);
     }
-    function speakFallback(pack) {
-      try { window.speechSynthesis.cancel(); } catch (e) {}
-      const text = (pack.lines || []).map(l => l.text).join('. ');
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.96; u.pitch = 1.02;
-      const voices = speechSynthesis.getVoices();
-      const v = voices.find(x => /female|samantha|google uk english female|zira|susan/i.test(x.name)) || voices.find(x => /en/i.test(x.lang));
-      if (v) u.voice = v;
-      status.textContent = 'Live · reading this listing';
+    function speakFallback(ls){
+      try{ speechSynthesis.cancel(); }catch(e){}
+      const u = new SpeechSynthesisUtterance((ls||[]).map(x=>x.text).join('. '));
+      u.rate=.96;
+      const vs = speechSynthesis.getVoices();
+      const v = vs.find(x=>/female|samantha|zira|google uk/i.test(x.name)) || vs.find(x=>/en/i.test(x.lang));
+      if(v) u.voice=v;
       speechSynthesis.speak(u);
     }
-
-    function endCall() {
-      player.pause(); player.currentTime = 0;
-      try { window.speechSynthesis.cancel(); } catch (e) {}
+    player.ontimeupdate = ()=>{
+      while (shown < lines.length && player.currentTime >= lines[shown].t) {
+        const L = lines[shown++];
+        log.innerHTML += `<div class="who">${L.who}</div><p>${L.text}</p>`;
+        log.scrollTop = log.scrollHeight;
+      }
+    };
+    function endCall(){
+      player.pause(); player.currentTime=0;
+      try{ speechSynthesis.cancel(); }catch(e){}
       document.body.classList.remove('lock');
       document.getElementById('call').classList.remove('show');
     }
-    function toggleHold() {
-      if (window.speechSynthesis && speechSynthesis.speaking && !player.src) {
-        if (speechSynthesis.paused) { speechSynthesis.resume(); phone.classList.remove('paused'); }
-        else { speechSynthesis.pause(); phone.classList.add('paused'); }
-        return;
-      }
+    function toggleHold(){
       if (player.paused) { player.play(); phone.classList.remove('paused'); }
       else { player.pause(); phone.classList.add('paused'); }
     }
-
-    player.addEventListener('timeupdate', () => {
-      while (shown < lines.length && player.currentTime >= lines[shown].t) {
-        const row = lines[shown];
-        log.innerHTML += `<p><span class="who">${row.who}</span><br>${row.text}</p>`;
-        log.scrollTop = log.scrollHeight;
-        if (row.text.includes('Al Mouj')) {
-          hits.innerHTML = '<div class="hit"><span>Al Mouj 2BR furnished</span><b>OMR 650/mo</b></div>';
-        }
-        if (row.text.includes('185,000') || row.text.includes('villa')) {
-          hits.innerHTML += '<div class="hit"><span>Garden villa · vacant</span><b>OMR 185,000</b></div>';
-        }
-        if (row.text.includes('98,500') || row.text.includes('Seeb')) {
-          hits.innerHTML += '<div class="hit"><span>Seeb townhouse + maid</span><b>OMR 98,500</b></div>';
-        }
-        shown += 1;
-      }
-    });
-
-    player.addEventListener('ended', () => {
-      status.textContent = 'Call complete · viewing can be booked';
-      phone.classList.add('paused');
-    });
   </script>
 </body>
 </html>
