@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#071016" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>OmanEstate Private — VIP Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #071016;
+      --navy: #0c1c24;
+      --panel: #12262f;
+      --line: rgba(212, 175, 110, .22);
+      --gold: #d4af6e;
+      --gold-2: #f0d7a3;
+      --sand: #e8d7b8;
+      --ivory: #f6f1e8;
+      --mute: #9aa8b0;
+      --ok: #7dcea0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: Manrope, system-ui, sans-serif;
+      background: var(--ink);
+      color: var(--ivory);
+      overflow-x: hidden;
+    }
+    body.lock { overflow: hidden; height: 100dvh; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button, select, input { font: inherit; }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+    .ribbon {
+      background: linear-gradient(90deg, #3a2a12, #7a5a28 40%, #3a2a12);
+      color: #1a1208;
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      font-weight: 700;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 40;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      padding: 12px 20px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      background: rgba(7,16,22,.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .burger {
+      display: none; width: 44px; height: 44px; border-radius: 12px;
+      border: 1px solid var(--line); background: transparent; color: var(--ivory);
+      cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 5px;
+    }
+    .burger span { width: 18px; height: 1.5px; background: var(--gold-2); display: block; }
+    .mobile-drawer {
+      display: none; position: fixed; inset: 64px 12px auto 12px; z-index: 45;
+      background: #0e1d24; border: 1px solid var(--line); border-radius: 18px;
+      padding: 12px; flex-direction: column; gap: 4px;
+    }
+    .mobile-drawer a { padding: 12px 14px; border-radius: 12px; color: var(--sand); }
+    .mobile-drawer.open { display: flex; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(145deg, #f0d7a3, #9a6f2e);
+      color: #1a1208; display: grid; place-items: center;
+      font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 22px;
+    }
+    .brand b { font-size: 15px; letter-spacing: .04em; }
+    .brand small { display: block; color: var(--gold); letter-spacing: .28em; font-size: 9px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 22px; color: var(--mute); font-size: 13px; }
+    .nav-cta {
+      border: 1px solid var(--gold);
+      color: var(--gold-2);
+      padding: 9px 16px; border-radius: 999px; font-size: 12px; letter-spacing: .08em;
+    }
+
+    .hero {
+      position: relative; min-height: 92svh;
+      display: grid; place-items: end start;
+      background:
+        linear-gradient(180deg, rgba(7,16,22,.25) 0%, rgba(7,16,22,.55) 48%, #071016 100%),
+        url("img/almouj-marina.jpg") center/cover no-repeat;
+    }
+    .hero-inner { padding: 0 0 72px; width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .kicker {
+      color: var(--gold); letter-spacing: .32em; font-size: 11px; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: .92; font-weight: 600; max-width: 16ch;
+    }
+    h1 em { font-style: italic; color: var(--gold-2); }
+    .hero p.lead { max-width: 46ch; color: #d7ddd8; margin: 18px 0 28px; font-size: 16px; line-height: 1.6; }
+    .search {
+      display: grid; grid-template-columns: 1.4fr 1fr auto;
+      gap: 8px; background: rgba(12,28,36,.72);
+      border: 1px solid var(--line); padding: 10px; border-radius: 18px;
+      backdrop-filter: blur(16px); max-width: 760px; width: 100%;
+    }
+    .search input, .search select {
+      background: transparent; border: 0; color: white; padding: 14px 12px; outline: none; font: inherit; min-width: 0; width: 100%;
+    }
+    .search button {
+      background: linear-gradient(180deg, #f0d7a3, #c49a4c);
+      color: #1a1208; border: 0; border-radius: 12px; padding: 12px 22px;
+      font-weight: 700; cursor: pointer; white-space: nowrap; min-height: 48px;
+    }
+    .stats { display: flex; flex-wrap: wrap; gap: 22px 28px; margin-top: 28px; color: var(--sand); font-size: 13px; }
+    .stats b { display: block; font-family: "Cormorant Garamond", serif; font-size: clamp(22px, 4vw, 28px); color: white; }
+
+    .section { padding: 84px 0; }
+    .sec-h { display: flex; justify-content: space-between; align-items: end; margin-bottom: 28px; gap: 20px; }
+    h2 { font-family: "Cormorant Garamond", serif; font-size: clamp(30px, 5vw, 42px); font-weight: 600; }
+    .sec-h p { color: var(--mute); max-width: 42ch; font-size: 14px; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .card {
+      background: #0e1d24; border: 1px solid rgba(255,255,255,.06);
+      border-radius: 22px; overflow: hidden; position: relative;
+    }
+    .card .ph { height: 210px; background-size: cover; background-position: center; position: relative; }
+    .badge {
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(7,16,22,.7); border: 1px solid var(--line);
+      color: var(--gold-2); font-size: 10px; letter-spacing: .14em;
+      text-transform: uppercase; padding: 6px 9px; border-radius: 999px;
+    }
+    .card .body { padding: 16px 16px 18px; }
+    .card h3 { font-size: 16px; margin-bottom: 6px; }
+    .price { color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+    .meta { color: var(--mute); font-size: 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; }
+    .ask {
+      margin-top: 14px; width: 100%;
+      background: transparent; border: 1px solid var(--gold);
+      color: var(--gold-2); border-radius: 12px; padding: 12px; cursor: pointer; font: inherit; min-height: 46px;
+    }
+
+    .comms { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; }
+    .comm { min-height: 240px; border-radius: 22px; overflow: hidden; position: relative; background-size: cover; background-position: center; }
+    .comm span {
+      position: absolute; inset: auto 16px 16px 16px;
+      font-family: "Cormorant Garamond", serif; font-size: 28px;
+    }
+
+    .ai-band {
+      background:
+        radial-gradient(800px 300px at 10% 0%, rgba(212,175,110,.12), transparent 60%),
+        #0a171d;
+      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    }
+    .ai-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: center; }
+    .ai-photo {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 28px;
+      border: 1px solid var(--line); filter: saturate(.92);
+    }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 24px; }
+    .pills span {
+      border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px;
+      font-size: 12px; color: var(--sand);
+    }
+    .big-call {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(180deg, #f0d7a3, #c49a4c);
+      color: #1a1208; border: 0; border-radius: 999px;
+      padding: 14px 22px; font-weight: 700; cursor: pointer; font-size: 14px;
+    }
+
+    footer { padding: 40px 0 calc(90px + env(safe-area-inset-bottom)); color: var(--mute); font-size: 13px; border-top: 1px solid rgba(255,255,255,.05); }
+    .fab {
+      position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); z-index: 50;
+      display: flex; align-items: center; gap: 10px;
+      background: #111; border: 1px solid var(--gold);
+      color: var(--gold-2); padding: 10px 14px 10px 10px; border-radius: 999px;
+      cursor: pointer; box-shadow: 0 12px 40px rgba(0,0,0,.4);
+      max-width: calc(100vw - 28px);
+    }
+    .fab img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    .pulse {
+      position: absolute; left: 10px; width: 42px; height: 42px; border-radius: 50%;
+      border: 1px solid var(--gold); animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); opacity: .7; }
+      to { transform: scale(1.55); opacity: 0; }
+    }
+
+    .overlay {
+      position: fixed; inset: 0; z-index: 80; display: none;
+      background: rgba(3,8,11,.72); backdrop-filter: blur(10px);
+      align-items: center; justify-content: center; padding: 16px;
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+    .overlay.show { display: flex; }
+    .phone {
+      width: min(420px, 100%);
+      max-height: 100%;
+      overflow: auto;
+      background: linear-gradient(180deg, #16303a, #0b171c);
+      border: 1px solid var(--line);
+      border-radius: 32px; padding: 22px 20px 18px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    }
+    .phone-top { text-align: center; color: var(--mute); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
+    .avatar-wrap { display: grid; place-items: center; margin: 18px 0 8px; }
+    .avatar-wrap img {
+      width: 118px; height: 118px; border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--gold);
+    }
+    .phone h3 { text-align: center; font-family: "Cormorant Garamond", serif; font-size: 30px; }
+    .status { text-align: center; color: var(--ok); font-size: 12px; margin-bottom: 14px; }
+    .wave { display: flex; justify-content: center; gap: 3px; height: 28px; align-items: end; margin: 6px 0 14px; }
+    .wave i {
+      width: 3px; background: var(--gold); display: block; border-radius: 3px;
+      animation: eq 1s ease-in-out infinite; height: 8px;
+    }
+    .wave i:nth-child(2) { animation-delay: .1s }
+    .wave i:nth-child(3) { animation-delay: .18s }
+    .wave i:nth-child(4) { animation-delay: .05s }
+    .wave i:nth-child(5) { animation-delay: .22s }
+    .wave i:nth-child(6) { animation-delay: .12s }
+    .wave i:nth-child(7) { animation-delay: .3s }
+    @keyframes eq {
+      0%,100% { height: 6px; }
+      50% { height: 26px; }
+    }
+    .paused .wave i { animation: none; height: 6px; }
+    .transcript {
+      background: rgba(0,0,0,.28); border-radius: 16px; padding: 12px;
+      min-height: 148px; max-height: 180px; overflow: auto; font-size: 13px; line-height: 1.45;
+    }
+    .transcript .who { color: var(--gold); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+    .transcript p { margin: 0 0 10px; color: #dfe6e8; }
+    .phone-actions { display: flex; gap: 10px; margin-top: 14px; }
+    .phone-actions button {
+      flex: 1; border: 0; border-radius: 14px; padding: 12px; cursor: pointer; font-weight: 700;
+    }
+    .end { background: #8b2a2a; color: white; }
+    .hold { background: #1d333c; color: var(--ivory); border: 1px solid rgba(255,255,255,.08) !important; }
+    .mini { margin-top: 12px; display: grid; gap: 8px; }
+    .mini b { font-size: 12px; color: var(--gold); }
+    .hit {
+      display: flex; justify-content: space-between; gap: 8px;
+      background: #102029; border: 1px solid rgba(212,175,110,.15);
+      border-radius: 12px; padding: 8px 10px; font-size: 12px;
+    }
+
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .comms { grid-template-columns: 1fr 1fr; }
+      .comms .comm:first-child { grid-column: 1 / -1; min-height: 280px; }
+    }
+    @media (max-width: 880px) {
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .burger { display: flex; }
+      .ai-grid, .search { grid-template-columns: 1fr; }
+      .hero { min-height: 100svh; }
+      .hero-inner { padding-bottom: 96px; }
+      .ai-photo { max-height: 420px; width: min(100%, 420px); margin: 0 auto; aspect-ratio: 3/4; }
+      .sec-h { flex-direction: column; align-items: flex-start; }
+      .ribbon { font-size: 10px; letter-spacing: .12em; padding: 8px 10px; }
+    }
+    @media (max-width: 640px) {
+      .grid, .comms { grid-template-columns: 1fr; }
+      .comms .comm:first-child { grid-column: auto; }
+      .search button { width: 100%; }
+      .stats { gap: 16px; }
+      .stats > div { flex: 1 1 30%; min-width: 96px; }
+      .card .ph { height: 200px; }
+      .fab-copy { display: none; }
+      .fab { padding: 8px; }
+      .section { padding: 56px 0; }
+      h1 { font-size: clamp(36px, 12vw, 58px); }
+      .phone { border-radius: 24px; padding: 16px 14px 14px; }
+      .avatar-wrap img { width: 92px; height: 92px; }
+      .transcript { min-height: 120px; max-height: 28vh; }
+    }
+    @media (max-width: 400px) {
+      .wrap, .hero-inner { width: calc(100% - 24px); }
+      .kicker { letter-spacing: .18em; font-size: 10px; }
+    }
+    @media (min-width: 1400px) {
+      .wrap, .hero-inner { width: min(1240px, calc(100% - 64px)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="ribbon">VIP Concept Mockup · Live AI Call Agent · Built from OmanEstate inventory</div>
+  <nav>
+    <div class="brand">
+      <div class="mark">O</div>
+      <div>
+        <b>OmanEstate</b>
+        <small>Private</small>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#residences">Residences</a>
+      <a href="#communities">Communities</a>
+      <a href="#advisor">AI Advisor</a>
+      <a href="#desk">Muscat Desk</a>
+    </div>
+    <div class="nav-right">
+      <a class="nav-cta" href="#" onclick="openCall();return false;">Call Layla · Live</a>
+      <button class="burger" id="burger" aria-label="Open menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-drawer" id="drawer">
+    <a href="#residences" onclick="toggleMenu()">Residences</a>
+    <a href="#communities" onclick="toggleMenu()">Communities</a>
+    <a href="#advisor" onclick="toggleMenu()">AI Advisor</a>
+    <a href="#desk" onclick="toggleMenu()">Muscat Desk</a>
+    <a href="#" onclick="toggleMenu();openCall();return false;">Call Layla · Live</a>
+  </div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="kicker">Muscat · Al Mouj · Seeb · Salalah</div>
+      <h1>The private door<br>to <em>Oman.</em></h1>
+      <p class="lead">A quieter estate house. Speak to Layla — she reads this portal live and tells you what is actually available, at which price, in which community.</p>
+      <div class="search">
+        <input id="q" placeholder="Describe the home — “2 bed Al Mouj under 700 OMR”" />
+        <select>
+          <option>Live in Oman</option>
+          <option>Rent</option>
+          <option>Buy / Invest</option>
+        </select>
+        <button onclick="openCall()">Ask Layla</button>
+      </div>
+      <div class="stats">
+        <div><b>8</b> live listings in this mock</div>
+        <div><b>OMR</b> pricing from the current site</div>
+        <div><b>AI call</b> trained on this inventory</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="residences">
+    <div class="wrap">
+      <div class="sec-h">
+        <h2>On the board tonight</h2>
+        <p>Taken from the current OmanEstate listings — rewritten as a private desk, not a classifieds wall.</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="ph" style="background-image:url('img/almouj-apartments.jpg')">
+            <span class="badge">Rent · Al Mouj</span>
+          </div>
+          <div class="body">
+            <h3>Sea-view 2 bedroom, furnished</h3>
+            <div class="price">OMR 650 / month</div>
+            <div class="meta"><span>2 bed · 2 bath</span><span>1,150 ft²</span><span>Malik Shawal</span></div>
+            <button class="ask" onclick="openCall('almouj')">Ask Layla about this home</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="ph" style="background-image:url('img/muscat-luxury.jpg')">
+            <span class="badge">Sale · Vacant</span>
+          </div>
+          <div class="body">
+            <h3>Luxury villa, private garden</h3>
+            <div class="price">OMR 185,000</div>
+            <div class="meta"><span>4 bed · 5 bath</span><span>3,400 ft²</span><span>Shiyma Osman</span></div>
+            <button class="ask" onclick="openCall('villa')">Ask Layla about this home</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="ph" style="background-image:url('img/muscat-courtyard.jpg')">
+            <span class="badge">Sale · Seeb</span>
+          </div>
+          <div class="body">
+            <h3>Family townhouse + maid’s room</h3>
+            <div class="price">OMR 98,500</div>
+            <div class="meta"><span>3 bed · 4 bath</span><span>2,100 ft²</span><span>Mohnish Keswani</span></div>
+            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="ph" style="background-image:url('img/interior-1.jpg')">
+            <span class="badge">Sale · High yield</span>
+          </div>
+          <div class="body">
+            <h3>High-floor 1 bedroom</h3>
+            <div class="price">OMR 42,000</div>
+            <div class="meta"><span>1 bed · 2 bath</span><span>820 ft²</span><span>Tarik Horani</span></div>
+            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="ph" style="background-image:url('img/interior-2.jpg')">
+            <span class="badge">Rent · Ruwi</span>
+          </div>
+          <div class="body">
+            <h3>Furnished studio · 2 months free</h3>
+            <div class="price">OMR 280 / month</div>
+            <div class="meta"><span>Studio</span><span>540 ft²</span><span>Rakesh Tolani</span></div>
+            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="ph" style="background-image:url('img/salalah.jpg')">
+            <span class="badge">Rent · Bawshar / Sohar</span>
+          </div>
+          <div class="body">
+            <h3>Coastal apartments</h3>
+            <div class="price">OMR 380 – 420 / month</div>
+            <div class="meta"><span>2–3 bed</span><span>Shiyma Osman · Rakesh Tolani</span></div>
+            <button class="ask" onclick="openCall()">Ask Layla about this home</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="communities" style="padding-top:10px">
+    <div class="wrap">
+      <div class="sec-h">
+        <h2>Communities she knows</h2>
+        <p>Same cities already named on the current site — presented as destinations, not tiles.</p>
+      </div>
+      <div class="comms">
+        <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/almouj-aerial.jpg')"><span>Al Mouj, Muscat</span></div>
+        <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/salalah.jpg')"><span>Salalah</span></div>
+        <div class="comm" style="background-image:linear-gradient(180deg,transparent,rgba(0,0,0,.55)),url('img/muscat-luxury.jpg')"><span>Seeb · Bawshar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ai-band" id="advisor">
+    <div class="wrap ai-grid">
+      <img class="ai-photo" src="img/layla.jpg" alt="Layla, OmanEstate private advisor" />
+      <div>
+        <div class="kicker">Integrated call agent</div>
+        <h2>Layla does not chat.<br>She answers the inventory.</h2>
+        <p style="color:#c9d2d6;margin-top:14px;line-height:1.7">
+          This is the demo you would ship. The voice is recorded against the live cards on this mock —
+          Al Mouj at OMR 650, the garden villa at OMR 185,000, Seeb townhouse at OMR 98,500.
+          No generic chatbot. She quotes this website.
+        </p>
+        <div class="pills">
+          <span>Live listing read</span><span>Budget match</span><span>Agent handoff</span>
+          <span>Viewing on Sultan Qaboos Street</span>
+        </div>
+        <button class="big-call" onclick="openCall()">▶ Play the live call</button>
+      </div>
+    </div>
+  </section>
+
+  <footer id="desk">
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
+      <div>
+        <strong style="color:white">OmanEstate Private</strong>
+        <p>Sultan Qaboos Street, Building 42, Muscat<br>+968 2400 0000 · support@omanestate.om</p>
+      </div>
+      <div>VIP mockup for proposal · Not the live production site<br>Open this file and press Call Layla.</div>
+    </div>
+  </footer>
+
+  <button class="fab" onclick="openCall()">
+    <span class="pulse"></span>
+    <img src="img/layla.jpg" alt="" />
+    <div class="fab-copy" style="text-align:left">
+      <b style="display:block;font-size:12px">Layla is live</b>
+      <span style="font-size:11px;color:#cbb98a">Tap to start AI call</span>
+    </div>
+  </button>
+
+  <div class="overlay" id="call">
+    <div class="phone" id="phone">
+      <div class="phone-top">Private line · Encrypted desk</div>
+      <div class="avatar-wrap"><img src="img/layla.jpg" alt=""></div>
+      <h3>Layla</h3>
+      <div class="status" id="status">Connecting to inventory…</div>
+      <div class="wave" id="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="transcript" id="log"></div>
+      <div class="mini" id="hits"></div>
+      <div class="phone-actions">
+        <button class="hold" onclick="toggleHold()">Pause</button>
+        <button class="end" onclick="endCall()">End call</button>
+      </div>
+      <audio id="player" preload="auto"></audio>
+    </div>
+  </div>
+
+  <script>
+    const player = document.getElementById('player');
+    const log = document.getElementById('log');
+    const hits = document.getElementById('hits');
+    const status = document.getElementById('status');
+    const phone = document.getElementById('phone');
+
+    const demoLines = [
+      { t: 0.4, who: 'Layla', text: 'OmanEstate private line. This is Layla. How may I help you this evening?' },
+      { t: 7.2, who: 'Caller', text: 'I am looking in Muscat. Two bedrooms, sea view if possible, under seven hundred rials a month.' },
+      { t: 16.0, who: 'Layla', text: 'Al Mouj Muscat. Furnished two-bedroom, marina view, OMR 650 a month. Agent Malik Shawal. Active now.' },
+      { t: 28.5, who: 'Caller', text: 'What if I decide to buy instead of rent?' },
+      { t: 33.2, who: 'Layla', text: 'A vacant four-bedroom villa at OMR 185,000 — Shiyma Osman. Or Seeb townhouse at OMR 98,500.' },
+      { t: 48.0, who: 'Caller', text: 'Hold the Al Mouj apartment and send the villa details.' },
+      { t: 53.2, who: 'Layla', text: 'Done. Priority viewing flagged. Villa brief on its way.' }
+    ];
+
+    const inventoryClip = [
+      { t: 0.3, who: 'Layla', text: 'Here is what is active on OmanEstate right now.' },
+      { t: 5.0, who: 'Layla', text: 'Al Mouj: furnished 2-bed sea view, OMR 650 / month, Malik Shawal.' },
+      { t: 14.0, who: 'Layla', text: 'Sale: vacant 4-bed villa, private garden, OMR 185,000, Shiyma Osman.' },
+      { t: 23.0, who: 'Layla', text: 'Seeb family townhouse, 3 bed + maid, OMR 98,500.' },
+      { t: 31.0, who: 'Layla', text: 'Yield play: high-floor 1-bed at OMR 42,000. Ruwi studio from OMR 280 with two months free.' }
+    ];
+
+    const almoujClip = [
+      { t: 0.2, who: 'Layla', text: 'This listing is live. Al Mouj Muscat. Furnished two-bedroom, marina view.' },
+      { t: 7.0, who: 'Layla', text: 'OMR 650 a month. Two baths. Ready to move. Listed by Malik Shawal.' }
+    ];
+
+    let shown = 0;
+    let lines = demoLines;
+
+    function toggleMenu() {
+      document.getElementById('drawer').classList.toggle('open');
+    }
+    function openCall(kind) {
+      document.getElementById('drawer').classList.remove('open');
+      document.body.classList.add('lock');
+      document.getElementById('call').classList.add('show');
+      log.innerHTML = '';
+      hits.innerHTML = '';
+      shown = 0;
+      status.textContent = 'Connecting to inventory…';
+      phone.classList.remove('paused');
+      if (kind === 'almouj') {
+        player.src = 'audio/layla-almouj.mp3';
+        lines = almoujClip;
+        hits.innerHTML = '<div class="hit"><span>Al Mouj 2BR sea view</span><b>OMR 650/mo</b></div>';
+      } else if (kind === 'villa') {
+        player.src = 'audio/layla-inventory.mp3';
+        lines = inventoryClip;
+      } else {
+        player.src = 'audio/live-call-demo.mp3';
+        lines = demoLines;
+      }
+      setTimeout(() => {
+        status.textContent = 'Live · reading OmanEstate listings';
+        player.play().catch(() => {
+          status.textContent = 'Tap Pause then play — browser blocked autoplay';
+        });
+      }, 700);
+    }
+
+    function endCall() {
+      player.pause(); player.currentTime = 0;
+      document.body.classList.remove('lock');
+      document.getElementById('call').classList.remove('show');
+    }
+    function toggleHold() {
+      if (player.paused) { player.play(); phone.classList.remove('paused'); }
+      else { player.pause(); phone.classList.add('paused'); }
+    }
+
+    player.addEventListener('timeupdate', () => {
+      while (shown < lines.length && player.currentTime >= lines[shown].t) {
+        const row = lines[shown];
+        log.innerHTML += `<p><span class="who">${row.who}</span><br>${row.text}</p>`;
+        log.scrollTop = log.scrollHeight;
+        if (row.text.includes('Al Mouj')) {
+          hits.innerHTML = '<div class="hit"><span>Al Mouj 2BR furnished</span><b>OMR 650/mo</b></div>';
+        }
+        if (row.text.includes('185,000') || row.text.includes('villa')) {
+          hits.innerHTML += '<div class="hit"><span>Garden villa · vacant</span><b>OMR 185,000</b></div>';
+        }
+        if (row.text.includes('98,500') || row.text.includes('Seeb')) {
+          hits.innerHTML += '<div class="hit"><span>Seeb townhouse + maid</span><b>OMR 98,500</b></div>';
+        }
+        shown += 1;
+      }
+    });
+
+    player.addEventListener('ended', () => {
+      status.textContent = 'Call complete · viewing can be booked';
+      phone.classList.add('paused');
+    });
+  </script>
+</body>
+</html>
