@@ -710,7 +710,7 @@ const heroImgs = ['img/muscat-luxury.jpg','img/almouj-aerial.jpg','img/almouj-ma
 
 let currentId = null, filter = 'all', role = 'agent';
 let chatHistory = [], lastReplyText = '', lastUserText = '', player = new Audio();
-let arabicMode = false, ttsVoices = [];
+let arabicMode = false, ttsVoices = [], lastVoiceKey = '', speakGen = 0;
 function loadVoices(){ ttsVoices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : []; }
 if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 let lxList = [], lxI = 0;
@@ -873,6 +873,7 @@ function openAdvisor(focusId){
       ? `Tell me about the ${HOMES[focusId].title} and whether it suits a budget of OMR ${budget||'—'}.`
       : `My budget is OMR ${budget||'—'} and I'm open to ${intent==='either'?'renting or buying':intent}. What fits me on this board?`;
     renderQuick(focusId);
+    lastVoiceKey = arabicMode ? 'hello-ar' : 'hello-en';
     pushMsg('bot', arabicMode
       ? 'مرحبا، أنا ليلى. أعمل معك كوكيلة عقارية ومستشارة مالية على هذه القائمة. أعطني رقماً بالريال العماني، أو اختر منزلاً.'
       : "Marhaba — I'm Layla. I work this board as your real-estate agent and as a financial guide. Give me a figure in Omani rials, or tap a home.");
@@ -892,7 +893,7 @@ function renderQuick(focusId){
   document.getElementById('quickRow').innerHTML = chips.map(c=>`<button class="quick" type="button" onclick="sendQuick(${JSON.stringify(c)})">${c}</button>`).join('');
 }
 function sendQuick(text){ document.getElementById('chatInput').value = text; sendChat(); }
-function closeAdvisor(){ document.getElementById('sheet').classList.remove('show'); document.body.classList.remove('lock'); player.pause(); try{ speechSynthesis.cancel(); }catch(e){} }
+function closeAdvisor(){ document.getElementById('sheet').classList.remove('show'); document.body.classList.remove('lock'); stopAllSpeech(); }
 
 function pushMsg(who, text, hits){
   const body = document.getElementById('chatBody');
@@ -942,8 +943,10 @@ async function runTurn(userText){
   await new Promise(r=>setTimeout(r, 420 + Math.min(900, userText.length*8)));
   typingOff();
   const pack = adviseText(userText, currentId);
+  lastVoiceKey = pack.voiceKey || '';
   pushMsg('bot', pack.text, pack.hits);
   renderQuick(currentId);
+  speakLastReply();
 }
 
 function adviseText(raw, focusId){
@@ -952,7 +955,7 @@ function adviseText(raw, focusId){
   const wantsRent = /rent|lease|let/.test(q) || document.getElementById('intent').value==='rent';
   const wantsBuy = /buy|purchase|own|deposit|mortgage|yield/.test(q) || document.getElementById('intent').value==='buy';
   const hits = [];
-  let text = '', textAr = '';
+  let text = '', textAr = '', voiceKey = '';
   const financeTone = role==='finance' || /yield|deposit|financ|roi|mortgage|cash|budget|rial/.test(q);
 
   if(focusId && HOMES[focusId]){
@@ -966,6 +969,7 @@ function adviseText(raw, focusId){
         ? `${focus.title} بسعر ${focus.price}. ${budget? 'مبلغ '+budget.toLocaleString()+' ريال عماني يغطي نحو '+months+' شهراً من هذا الإيجار — اعتبره احتياطياً وليس شراءً.':''} التكلفة السنوية ${(focus.monthly*12).toLocaleString()} ريال عماني. إذا كنت تفضل التملك، فالشقة ذات الغرفة الواحدة بسعر 42,000 هي الأقل تكلفة في هذه القائمة.`
         : `${focus.title} في منطقة ${focus.badge}. ${focus.blurb} أنصحك بمعاينتها أولاً، ثم تقرر إن كان من الأفضل إبقاء المبلغ سائلاً.`;
       hits.push(focusId,'onebed');
+      voiceKey = '';
     } else {
       const dep = Math.round(focus.buy*0.2);
       text = financeTone
@@ -975,6 +979,7 @@ function adviseText(raw, focusId){
         ? `${focus.title} معروض بسعر ${focus.price}. الدفعة المبدئية بنسبة 20% تقارب ${dep.toLocaleString()} ريال عماني، ويتبقى ${(focus.buy-dep).toLocaleString()} ريال عماني يمكن تمويله. ${budget && budget < focus.buy*0.15 ? 'مبلغ '+budget.toLocaleString()+' ريال عماني يصلح كبداية دفعة وليس شراءً نقدياً كاملاً — انظر إلى شقة الغرفة الواحدة بسعر 42,000 أو استأجر في الموج بسعر 650.' : budget && budget >= focus.buy ? 'هذا المبلغ يكفي لشراء هذا المنزل دون ضغط مالي.' : 'استخدم المبلغ كدفعة مبدئية ومول الباقي، أو استأجر في الموج ريثما يكتمل ملفك المالي.'}`
         : `${focus.title} بسعر ${focus.price}. ${focus.blurb}`;
       hits.push(focusId,'onebed','almouj');
+      voiceKey = '';
     }
   } else if(wantsRent || (!wantsBuy && budget && budget < 25000)){
     text = financeTone
@@ -984,6 +989,8 @@ function adviseText(raw, focusId){
       ? `اعتبر ${budget?budget.toLocaleString()+' ريال عماني':'هذا المبلغ'} احتياطياً للإيجار وليس للشراء. الموج بسعر 650 شهرياً لإطلالة المارينا. رويّ بسعر 280 إذا أردت مدينة مسقط بسعر أقل — مع شهرين مجانيين بالفعل. الشقق الساحلية بين 380 و420 إذا كان مكان العمل نحو صحار.`
       : `في هذه القائمة أنصحك بالإيجار أولاً بهذا المبلغ. الموج إذا أردت إطلالة المارينا. رويّ إذا أردت مسقط بسعر أقل. الساحل إذا كان طريق العمل نحو بوشر أو صحار.`;
     hits.push('almouj','ruwi','coastal');
+    if(financeTone && budget === 10000) voiceKey = arabicMode ? 'rent-10k-ar' : 'rent-10k-en';
+    else if(!financeTone) voiceKey = arabicMode ? '' : 'rent-agent-en';
   } else if(wantsBuy || budget >= 25000){
     text = financeTone
       ? `A purchase path in rials: the 1-bed at 42,000 is the smallest ticket and the easiest to let again. The Seeb townhouse at 98,500 is the family step — figure a deposit near 19,700. The garden villa at 185,000 waits for a stronger buyer. Cash works as the deposit; finance the rest.`
@@ -992,12 +999,14 @@ function adviseText(raw, focusId){
       ? `مسار الشراء بالريال العماني: شقة الغرفة الواحدة بسعر 42,000 هي الأقل تكلفة والأسهل لإعادة تأجيرها. منزل السيب العائلي بسعر 98,500 هو الخطوة العائلية — بدفعة مبدئية تقارب 19,700. الفيلا بحديقة بسعر 185,000 تنتظر مشترياً أقوى مالياً. استخدم النقد كدفعة مبدئية ومول الباقي.`
       : `إذا كنا نشتري من هذه القائمة، أبدأ معك بالشقة العلوية ذات الغرفة الواحدة، ثم السيب إذا احتجت غرفاً أكثر، ثم الفيلا بحديقة فقط إذا كان ملفك المالي قوياً بالفعل.`;
     hits.push('onebed','seeb','villa');
+    if(!arabicMode) voiceKey = financeTone ? 'buy-finance-en' : 'buy-agent-en';
   } else {
     text = 'Give me a number in Omani rials and whether you want to rent or buy, and I will point only at this board.';
     textAr = 'أعطني رقماً بالريال العماني وحدد إن كنت تريد الإيجار أو الشراء، وسأدلك فقط على ما في هذه القائمة.';
     hits.push('almouj','seeb');
+    if(!arabicMode) voiceKey = 'fallback-en';
   }
-  return { text: arabicMode ? textAr : text, hits:[...new Set(hits)] };
+  return { text: arabicMode ? textAr : text, hits:[...new Set(hits)], voiceKey };
 }
 
 function toggleLang(){
@@ -1009,53 +1018,111 @@ function toggleLang(){
   document.getElementById('chatInput').placeholder = arabicMode ? 'اسأل بالريال العماني — الميزانية، إيجار أو شراء، العائد…' : 'Ask in rials — budget, rent vs buy, yield…';
 }
 
+const LAYLA_CLIPS = {
+  'hello-en': 'audio/layla-hello-en.mp3',
+  'hello-ar': 'audio/layla-hello-ar.mp3',
+  'rent-10k-en': 'audio/layla-rent-10k-en.mp3',
+  'rent-10k-ar': 'audio/layla-rent-10k-ar.mp3',
+  'rent-agent-en': 'audio/layla-rent-agent-en.mp3',
+  'buy-finance-en': 'audio/layla-buy-finance-en.mp3',
+  'buy-agent-en': 'audio/layla-buy-agent-en.mp3',
+  'fallback-en': 'audio/layla-fallback-en.mp3'
+};
+
 const VOICE_CACHE = {};
 function pickVoice(lang, wantFemale){
   const cacheKey = lang+'|'+wantFemale;
   if(VOICE_CACHE[cacheKey]) return VOICE_CACHE[cacheKey];
   const voices = ttsVoices.length ? ttsVoices : (speechSynthesis.getVoices ? speechSynthesis.getVoices() : []);
   if(!voices.length) return null;
-  let pool = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(lang));
+  const want = lang === 'ar' ? /^ar/i : /^(en)/i;
+  let pool = voices.filter(v => v.lang && want.test(v.lang));
   if(!pool.length) pool = voices;
   const genderRe = wantFemale
-    ? /female|zira|salma|laila|layla|hala|samantha|amira|aria|jenny|hoda|zariyah|ghazal|emma|olivia|sara|susan|karen|moira|tessa/i
+    ? /female|zira|salma|laila|layla|hala|samantha|amira|aria|jenny|hoda|zariyah|ghazal|emma|olivia|sara|susan|karen|moira|tessa|sonia|libby|natasha|ava|michelle|noura|fatima/i
     : /male|majed|hamed|omar|daniel|fred|tarik|guy|naayf|david|mark|ryan|george/i;
-  // Rank each candidate — cloud/neural engines first, then the right gender, then non-local (usually richer) voices
   const score = v => {
     let s = 0;
-    // Tier 1: true neural/cloud voices (Edge's "Online (Natural)" Azure voices, or any
-    // engine that labels itself neural/premium) — closest to the recorded intro lines.
-    if(/online.*natural|neural|premium|enhanced/i.test(v.name)) s += 8;
-    // Tier 2: other cloud-served voices (e.g. Chrome's "Google US English" family) —
-    // not neural, but noticeably warmer than the old offline desktop voices below.
-    else if(v.localService === false) s += 4;
-    // Tier 0 (penalised): classic offline "Desktop" SAPI voices — the most robotic option,
-    // and Chrome's default fallback on Windows when nothing better is installed.
-    if(/desktop/i.test(v.name)) s -= 3;
-    if(genderRe.test(v.name)) s += 2;
+    if(/online.*natural|neural|premium|enhanced/i.test(v.name)) s += 10;
+    else if(v.localService === false) s += 5;
+    if(/google/i.test(v.name)) s += 3;
+    if(/en-GB|en-AU|United Kingdom|British/i.test(v.name+' '+(v.lang||''))) s += 2;
+    if(/desktop|espeak|microsoft david|microsoft zira desktop/i.test(v.name)) s -= 6;
+    if(genderRe.test(v.name)) s += 3;
     return s;
   };
   const best = [...pool].sort((a,b) => score(b)-score(a))[0] || voices[0];
   VOICE_CACHE[cacheKey] = best;
   return best;
 }
-// Break a reply into natural phrase-sized chunks so pacing has room to breathe,
-// instead of one flat, rushed utterance — closer to how Ali/Layla sound in the intro.
-function speechChunks(text){
-  const cleaned = (text||'').replace(/—/g, ', ').replace(/\s+/g, ' ').trim();
-  const sentences = cleaned.match(/[^.!?…]+[.!?…]*/g) || [cleaned];
-  const chunks = [];
-  sentences.forEach(s=>{
-    s.split(/,\s*/).reduce((acc, part, i, arr)=>{
-      chunks.push(i < arr.length-1 ? part+',' : part);
-      return acc;
-    }, null);
-  });
-  return chunks.map(c=>c.trim()).filter(Boolean);
+
+function numberWords(n){
+  n = Math.round(Math.abs(Number(n)||0));
+  if(n===0) return 'zero';
+  const ones = ['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+  const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  const u1000 = x => {
+    if(x<20) return ones[x];
+    if(x<100) return tens[Math.floor(x/10)] + (x%10 ? '-'+ones[x%10] : '');
+    return ones[Math.floor(x/100)] + ' hundred' + (x%100 ? ' and '+u1000(x%100) : '');
+  };
+  if(n<1000) return u1000(n);
+  if(n<1000000){
+    const k = Math.floor(n/1000), r = n%1000;
+    return u1000(k) + ' thousand' + (r ? (r<100 ? ' and ' : ' ') + u1000(r) : '');
+  }
+  return String(n);
 }
+
+function spokenForm(text, arabic){
+  let s = String(text||'');
+  if(arabic){
+    return s
+      .replace(/\bOMR\b/g, 'ريال عماني')
+      .replace(/(\d),(\d{3})/g, '$1$2')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  s = s.replace(/—/g, '. ');
+  s = s.replace(/\bOMR\b/g, 'Omani rials');
+  s = s.replace(/\b1-bed\b/gi, 'one-bed');
+  s = s.replace(/\b2-bed\b/gi, 'two-bed');
+  s = s.replace(/\bAl Mouj\b/g, 'Al Moj');
+  s = s.replace(/\bRuwi\b/g, 'Roo-wee');
+  s = s.replace(/\bBawshar\b/g, 'Baw-shar');
+  s = s.replace(/\bft²\b/g, 'square feet');
+  s = s.replace(/\b(\d{1,3}(?:,\d{3})+)\b/g, (_, n) => numberWords(n.replace(/,/g,'')));
+  s = s.replace(/\b(\d{2,6})\b/g, (_, n) => numberWords(n));
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+function speechChunks(text){
+  const cleaned = (text||'').replace(/\s+/g, ' ').trim();
+  const parts = cleaned.split(/(?<=[.!?…])\s+/).map(s=>s.trim()).filter(Boolean);
+  return parts.length ? parts : [cleaned];
+}
+
+function stopAllSpeech(){
+  speakGen++;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  try{ player.pause(); player.removeAttribute('src'); player.load(); }catch(e){}
+  const btn = document.getElementById('voiceBtn');
+  if(btn) btn.classList.remove('playing');
+}
+
+function playClip(src){
+  return new Promise(resolve=>{
+    const done = ()=>{ player.onended=null; player.onerror=null; resolve(); };
+    player.onended = done;
+    player.onerror = done;
+    player.src = src;
+    player.play().catch(done);
+  });
+}
+
 function speakTurn(text, opts){
   return new Promise(resolve=>{
-    const chunks = speechChunks(text);
+    const chunks = speechChunks(spokenForm(text, opts.lang==='ar'));
     if(!chunks.length){ resolve(); return; }
     const v = pickVoice(opts.lang, opts.female);
     let i = 0;
@@ -1063,14 +1130,12 @@ function speakTurn(text, opts){
       if(i >= chunks.length){ resolve(); return; }
       const chunk = chunks[i];
       const u = new SpeechSynthesisUtterance(chunk);
-      u.lang = opts.lang === 'ar' ? 'ar-SA' : 'en-US';
-      // Tiny natural drift in pitch/rate per phrase — a flat, identical value on every
-      // chunk is what makes machine speech sound robotic; real speech never repeats exactly.
-      u.pitch = opts.pitch + (Math.random()*0.06 - 0.03);
-      u.rate = opts.rate + (Math.random()*0.05 - 0.025);
+      u.lang = opts.lang === 'ar' ? 'ar-SA' : 'en-GB';
+      u.pitch = (opts.pitch||1.02) + (Math.random()*0.04 - 0.02);
+      u.rate = (opts.rate||0.92) + (Math.random()*0.03 - 0.015);
       u.volume = 1;
       if(v) u.voice = v;
-      const advance = ()=>{ i++; setTimeout(next, /[.!?…]$/.test(chunk) ? 260 : 110); };
+      const advance = ()=>{ i++; setTimeout(next, /[.!?…]$/.test(chunk) ? 220 : 80); };
       u.onend = advance;
       u.onerror = advance;
       speechSynthesis.speak(u);
@@ -1078,24 +1143,35 @@ function speakTurn(text, opts){
     next();
   });
 }
+
+async function speakLastReply(){
+  if(!lastReplyText) return;
+  const btn = document.getElementById('voiceBtn');
+  const gen = ++speakGen;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  try{ player.pause(); }catch(e){}
+  if(btn) btn.classList.add('playing');
+  const clip = LAYLA_CLIPS[lastVoiceKey];
+  try{
+    if(clip){
+      await playClip(clip);
+    } else if('speechSynthesis' in window){
+      const lang = arabicMode ? 'ar' : 'en';
+      await speakTurn(lastReplyText, { lang, pitch:1.02, rate:0.92, female:true });
+    }
+  } finally {
+    if(gen === speakGen && btn) btn.classList.remove('playing');
+  }
+}
+
 async function toggleVoice(){
   const btn = document.getElementById('voiceBtn');
-  if(!('speechSynthesis' in window)) return;
-  if(btn.classList.contains('playing')){
-    speechSynthesis.cancel();
-    btn.classList.remove('playing');
+  if(btn && btn.classList.contains('playing')){
+    stopAllSpeech();
     return;
   }
   if(!lastReplyText) return;
-  speechSynthesis.cancel();
-  btn.classList.add('playing');
-  const lang = arabicMode ? 'ar' : 'en';
-  try{
-    // Speak only Layla's reply, warm and unhurried — the same natural tone she opens the desk with.
-    await speakTurn(lastReplyText, { lang, pitch:1.03, rate:0.95, female:true });
-  } finally {
-    btn.classList.remove('playing');
-  }
+  await speakLastReply();
 }
 
 /* Drag rails */
