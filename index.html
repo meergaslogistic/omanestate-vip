@@ -108,7 +108,7 @@ body.detail-on #home{display:none;}
 body.detail-on #detail{display:block;}
 
 /* Full-screen hero */
-.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;color:#fff;}
+.hero{position:relative;min-height:72svh;display:flex;align-items:center;overflow:hidden;color:#fff;}
 .hero-bg{position:absolute;inset:0;}
 .hero-bg span{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;animation:heroFade 22s var(--ease) infinite;transform:scale(1.08);}
 .hero-bg span:nth-child(1){animation-delay:0s;opacity:1;}
@@ -118,7 +118,8 @@ body.detail-on #detail{display:block;}
 @keyframes heroFade{0%{opacity:0;transform:scale(1.08);}6%{opacity:1;}22%{opacity:1;transform:scale(1.18);}28%{opacity:0;}100%{opacity:0;}}
 .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,8,11,.28) 0%,rgba(110,10,24,.42) 48%,rgba(7,18,12,.94) 100%);z-index:1;}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(transparent,var(--cream));z-index:1;pointer-events:none;}
-.hero-inner{position:relative;z-index:2;padding:0 0 88px;width:min(1220px, calc(100% - 40px));margin:0 auto;}
+.hero-inner{position:relative;z-index:2;padding:0 0 32px;width:min(1220px, calc(100% - 40px));margin:0 auto;}
+@media (max-width:640px){.hero{min-height:64svh}}
 .kicker{color:var(--gold-soft);letter-spacing:.26em;font-size:10.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:9px;}
 .kicker::before{content:"";width:26px;height:1px;background:currentColor;display:inline-block;}
 h1.title{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(40px,7vw,86px);line-height:.96;font-weight:600;max-width:16ch;letter-spacing:-.015em;}
@@ -292,6 +293,20 @@ footer .fgrid{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap
 .voice-btn{background:var(--cream);color:var(--oman-deep);border:1px solid var(--line);}
 .voice-btn.playing{background:var(--gold-soft);}
 .voice-btn svg,.send-btn svg{width:17px;height:17px;}
+.lang-btn{border:1px solid var(--line);background:var(--cream);color:var(--oman-deep);font:600 12px/1 var(--sans, inherit);padding:8px 12px;border-radius:20px;flex:0 0 auto;cursor:pointer;letter-spacing:.02em;}
+.lang-btn.on{background:var(--oman-deep);color:#fff;border-color:var(--oman-deep);}
+/* Intro voice gate */
+.intro-gate{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,rgba(110,10,24,.92),rgba(7,18,12,.97) 70%);opacity:1;transition:opacity .7s ease;}
+.intro-gate.fade-out{opacity:0;pointer-events:none;}
+.intro-card{max-width:460px;width:calc(100% - 48px);text-align:center;color:#fff;}
+.intro-mark{width:64px;height:64px;margin:0 auto 18px;color:#C9A24A;}
+.intro-mark svg{width:100%;height:100%;}
+.intro-card h2{font:600 26px/1.2 inherit;margin:0 0 10px;}
+.intro-who{font:600 13px/1;letter-spacing:.08em;text-transform:uppercase;color:#C9A24A;margin:0 0 10px;min-height:14px;}
+.intro-cap{min-height:64px;font:400 16px/1.55 inherit;color:rgba(255,255,255,.88);margin:0 0 26px;transition:opacity .25s ease;}
+.intro-btn{border:0;background:#C9A24A;color:#1a1210;font:600 15px/1;padding:14px 30px;border-radius:30px;cursor:pointer;letter-spacing:.02em;}
+.intro-skip{display:block;margin:16px auto 0;border:0;background:transparent;color:rgba(255,255,255,.6);font:400 13px/1;cursor:pointer;text-decoration:underline;}
+.intro-playing .intro-mark{animation:floaty 2.2s ease-in-out infinite;}
 .ai-tag{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);}
 
 .lightbox{position:fixed;inset:0;z-index:95;background:rgba(10,6,7,.94);display:none;align-items:center;justify-content:center;padding:20px;}
@@ -357,6 +372,16 @@ body.has-cursor,body.has-cursor *{cursor:none !important;}
 </style>
 </head>
 <body>
+<div class="intro-gate" id="introGate">
+  <div class="intro-card">
+    <div class="intro-mark" id="introMark"></div>
+    <h2>OmanEstate Private</h2>
+    <div class="intro-who" id="introWho">&nbsp;</div>
+    <p class="intro-cap" id="introCap">Meet the desk — Ali, your property agent, and Layla, your financial advisor.</p>
+    <button class="intro-btn" id="introBtn" onclick="startIntro()">▶ Begin</button>
+    <button class="intro-skip" onclick="skipIntro()">Skip intro</button>
+  </div>
+</div>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
@@ -581,6 +606,7 @@ body.has-cursor,body.has-cursor *{cursor:none !important;}
         <h3>Layla</h3>
         <div class="sub" id="deskSub"><i></i>Property agent · Financial guide</div>
       </div>
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()" aria-label="Switch to Arabic">EN</button>
       <button class="desk-close" onclick="closeAdvisor()" aria-label="Close">✕</button>
     </div>
     <div class="roles">
@@ -639,6 +665,37 @@ document.getElementById('stateMark').innerHTML = KHANJAR;
 document.getElementById('cinemaMark').innerHTML = `<div style="width:88px;height:102px;color:#C9A24A">${KHANJAR}</div>`;
 document.getElementById('waterMark').innerHTML = KHANJAR;
 document.getElementById('heroEmblem').innerHTML = KHANJAR;
+document.getElementById('introMark').innerHTML = KHANJAR;
+
+const INTRO_LINES = [
+  { src:'audio/intro-ali-1.mp3',   who:'Ali · Property agent',      text:"Marhaba. I'm Ali, the property side of this desk." },
+  { src:'audio/intro-layla-1.mp3', who:'Layla · Financial advisor', text:"And I'm Layla — I read the numbers behind every home here." },
+  { src:'audio/intro-ali-2.mp3',   who:'Ali · Property agent',      text:"Someone's looking at the sea-view flat in Al Mouj, budget's ten thousand rials. What do you make of it?" },
+  { src:'audio/intro-layla-2.mp3', who:'Layla · Financial advisor', text:"Treat that as a rental buffer, not a purchase. Six-fifty a month, marina view, fully furnished — a smart place to start while the file builds." }
+];
+function startIntro(){
+  const gate = document.getElementById('introGate');
+  gate.classList.add('intro-playing');
+  document.getElementById('introBtn').style.display = 'none';
+  playIntroLine(0);
+}
+function playIntroLine(i){
+  if(i >= INTRO_LINES.length){ endIntro(); return; }
+  const line = INTRO_LINES[i];
+  document.getElementById('introWho').textContent = line.who;
+  document.getElementById('introCap').textContent = line.text;
+  const a = new Audio(line.src);
+  const advance = ()=>playIntroLine(i+1);
+  a.onended = advance;
+  a.onerror = advance;
+  a.play().catch(advance);
+}
+function skipIntro(){ try{ speechSynthesis.cancel(); }catch(e){} endIntro(); }
+function endIntro(){
+  const gate = document.getElementById('introGate');
+  gate.classList.add('fade-out');
+  setTimeout(()=>gate.remove(), 700);
+}
 
 const HOMES = {
   almouj:  { title:'Sea-view 2 bedroom, furnished', price:'OMR 650 / month', kind:'rent', monthly:650, buy:null, badge:'Rent · Al Mouj', meta:[['bed','2 bed'],['bath','2 bath'],['area','1,150 ft²']], agent:'Malik Shawal', views:1840, rank:'4.8', score:92, pano:'img/pano-almouj.jpg', imgs:['img/almouj-marina.jpg','img/almouj-apartments.jpg','img/interior-1.jpg','img/almouj-aerial.jpg'], amen:['Marina view','Furnished','Covered parking','Ready now'], blurb:'Al Mouj, above the marina walk. A clean rental if you would rather not lock cash into a purchase yet — fully furnished and ready to move into this week.' },
@@ -652,7 +709,10 @@ const HOME_KEYS = Object.keys(HOMES);
 const heroImgs = ['img/muscat-luxury.jpg','img/almouj-aerial.jpg','img/almouj-marina.jpg','img/salalah.jpg'];
 
 let currentId = null, filter = 'all', role = 'agent';
-let chatHistory = [], lastReplyText = '', player = new Audio();
+let chatHistory = [], lastReplyText = '', lastUserText = '', player = new Audio();
+let arabicMode = false, ttsVoices = [];
+function loadVoices(){ ttsVoices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : []; }
+if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 let lxList = [], lxI = 0;
 
 const heroBg = document.getElementById('heroBg');
@@ -813,7 +873,9 @@ function openAdvisor(focusId){
       ? `Tell me about the ${HOMES[focusId].title} and whether it suits a budget of OMR ${budget||'—'}.`
       : `My budget is OMR ${budget||'—'} and I'm open to ${intent==='either'?'renting or buying':intent}. What fits me on this board?`;
     renderQuick(focusId);
-    pushMsg('bot', "Marhaba — I'm Layla. I work this board as your real-estate agent and as a financial guide. Give me a figure in Omani rials, or tap a home.");
+    pushMsg('bot', arabicMode
+      ? 'مرحبا، أنا ليلى. أعمل معك كوكيلة عقارية ومستشارة مالية على هذه القائمة. أعطني رقماً بالريال العماني، أو اختر منزلاً.'
+      : "Marhaba — I'm Layla. I work this board as your real-estate agent and as a financial guide. Give me a figure in Omani rials, or tap a home.");
     setTimeout(()=>runTurn(opener), 280);
   }
 }
@@ -856,6 +918,7 @@ function pushMsg(who, text, hits){
   }
   body.scrollTop = body.scrollHeight;
   if(who==='bot') lastReplyText = text;
+  if(who==='user') lastUserText = text;
 }
 function typingOn(){
   const body = document.getElementById('chatBody');
@@ -889,7 +952,7 @@ function adviseText(raw, focusId){
   const wantsRent = /rent|lease|let/.test(q) || document.getElementById('intent').value==='rent';
   const wantsBuy = /buy|purchase|own|deposit|mortgage|yield/.test(q) || document.getElementById('intent').value==='buy';
   const hits = [];
-  let text = '';
+  let text = '', textAr = '';
   const financeTone = role==='finance' || /yield|deposit|financ|roi|mortgage|cash|budget|rial/.test(q);
 
   if(focusId && HOMES[focusId]){
@@ -899,41 +962,99 @@ function adviseText(raw, focusId){
       text = financeTone
         ? `${focus.title} is ${focus.price}. ${budget? 'OMR '+budget.toLocaleString()+' covers about '+months+' months at this rent — treat it as a buffer, not a purchase.':''} Annual outlay is OMR ${(focus.monthly*12).toLocaleString()}. If you want ownership instead, the 1-bed at 42,000 is the smallest ticket on the board.`
         : `${focus.title} sits in ${focus.badge}. ${focus.blurb} I would walk it first, then decide whether the cash should stay liquid.`;
+      textAr = financeTone
+        ? `${focus.title} بسعر ${focus.price}. ${budget? 'مبلغ '+budget.toLocaleString()+' ريال عماني يغطي نحو '+months+' شهراً من هذا الإيجار — اعتبره احتياطياً وليس شراءً.':''} التكلفة السنوية ${(focus.monthly*12).toLocaleString()} ريال عماني. إذا كنت تفضل التملك، فالشقة ذات الغرفة الواحدة بسعر 42,000 هي الأقل تكلفة في هذه القائمة.`
+        : `${focus.title} في منطقة ${focus.badge}. ${focus.blurb} أنصحك بمعاينتها أولاً، ثم تقرر إن كان من الأفضل إبقاء المبلغ سائلاً.`;
       hits.push(focusId,'onebed');
     } else {
       const dep = Math.round(focus.buy*0.2);
       text = financeTone
         ? `${focus.title} is listed at ${focus.price}. A 20% conversation is about OMR ${dep.toLocaleString()}, with OMR ${(focus.buy-dep).toLocaleString()} left to finance. ${budget && budget < focus.buy*0.15 ? budget.toLocaleString()+' OMR is a deposit start, not a cash purchase — look at the 1-bed at 42,000 or rent Al Mouj at 650 while you build the file.' : budget && budget >= focus.buy ? 'That budget takes this home without stretching.' : 'Use the cash as the down-payment and finance the rest, or rent Al Mouj until the file is ready.'}`
         : `${focus.title} is ${focus.price}. ${focus.blurb}`;
+      textAr = financeTone
+        ? `${focus.title} معروض بسعر ${focus.price}. الدفعة المبدئية بنسبة 20% تقارب ${dep.toLocaleString()} ريال عماني، ويتبقى ${(focus.buy-dep).toLocaleString()} ريال عماني يمكن تمويله. ${budget && budget < focus.buy*0.15 ? 'مبلغ '+budget.toLocaleString()+' ريال عماني يصلح كبداية دفعة وليس شراءً نقدياً كاملاً — انظر إلى شقة الغرفة الواحدة بسعر 42,000 أو استأجر في الموج بسعر 650.' : budget && budget >= focus.buy ? 'هذا المبلغ يكفي لشراء هذا المنزل دون ضغط مالي.' : 'استخدم المبلغ كدفعة مبدئية ومول الباقي، أو استأجر في الموج ريثما يكتمل ملفك المالي.'}`
+        : `${focus.title} بسعر ${focus.price}. ${focus.blurb}`;
       hits.push(focusId,'onebed','almouj');
     }
   } else if(wantsRent || (!wantsBuy && budget && budget < 25000)){
     text = financeTone
       ? `Treat ${budget?budget.toLocaleString()+' OMR':'this cash'} as a rental buffer, not a purchase. Al Mouj at 650 a month for the marina. Ruwi at 280 if you want the city cheap — two months already waived. Coastal stock at 380 to 420 if the office sits toward Sohar.`
       : `On this board I would rent first at that figure. Al Mouj if you want the marina walk. Ruwi if you want Muscat cheap. The coast if the commute is Bawshar or Sohar.`;
+    textAr = financeTone
+      ? `اعتبر ${budget?budget.toLocaleString()+' ريال عماني':'هذا المبلغ'} احتياطياً للإيجار وليس للشراء. الموج بسعر 650 شهرياً لإطلالة المارينا. رويّ بسعر 280 إذا أردت مدينة مسقط بسعر أقل — مع شهرين مجانيين بالفعل. الشقق الساحلية بين 380 و420 إذا كان مكان العمل نحو صحار.`
+      : `في هذه القائمة أنصحك بالإيجار أولاً بهذا المبلغ. الموج إذا أردت إطلالة المارينا. رويّ إذا أردت مسقط بسعر أقل. الساحل إذا كان طريق العمل نحو بوشر أو صحار.`;
     hits.push('almouj','ruwi','coastal');
   } else if(wantsBuy || budget >= 25000){
     text = financeTone
       ? `A purchase path in rials: the 1-bed at 42,000 is the smallest ticket and the easiest to let again. The Seeb townhouse at 98,500 is the family step — figure a deposit near 19,700. The garden villa at 185,000 waits for a stronger buyer. Cash works as the deposit; finance the rest.`
       : `If we are buying on this board I start you at the high-floor 1-bed, then Seeb if you need rooms, then the garden villa only if the file is already strong.`;
+    textAr = financeTone
+      ? `مسار الشراء بالريال العماني: شقة الغرفة الواحدة بسعر 42,000 هي الأقل تكلفة والأسهل لإعادة تأجيرها. منزل السيب العائلي بسعر 98,500 هو الخطوة العائلية — بدفعة مبدئية تقارب 19,700. الفيلا بحديقة بسعر 185,000 تنتظر مشترياً أقوى مالياً. استخدم النقد كدفعة مبدئية ومول الباقي.`
+      : `إذا كنا نشتري من هذه القائمة، أبدأ معك بالشقة العلوية ذات الغرفة الواحدة، ثم السيب إذا احتجت غرفاً أكثر، ثم الفيلا بحديقة فقط إذا كان ملفك المالي قوياً بالفعل.`;
     hits.push('onebed','seeb','villa');
   } else {
     text = 'Give me a number in Omani rials and whether you want to rent or buy, and I will point only at this board.';
+    textAr = 'أعطني رقماً بالريال العماني وحدد إن كنت تريد الإيجار أو الشراء، وسأدلك فقط على ما في هذه القائمة.';
     hits.push('almouj','seeb');
   }
-  return { text, hits:[...new Set(hits)] };
+  return { text: arabicMode ? textAr : text, hits:[...new Set(hits)] };
 }
 
-function toggleVoice(){
-  const btn = document.getElementById('voiceBtn');
-  try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(lastReplyText || '');
-    u.rate = 0.98; u.pitch = 1.02;
-    u.onstart = ()=>btn.classList.add('playing');
-    u.onend = ()=>btn.classList.remove('playing');
+function toggleLang(){
+  arabicMode = !arabicMode;
+  const btn = document.getElementById('langBtn');
+  btn.textContent = arabicMode ? 'ع' : 'EN';
+  btn.classList.toggle('on', arabicMode);
+  document.getElementById('chatBody').dir = arabicMode ? 'rtl' : 'ltr';
+  document.getElementById('chatInput').placeholder = arabicMode ? 'اسأل بالريال العماني — الميزانية، إيجار أو شراء، العائد…' : 'Ask in rials — budget, rent vs buy, yield…';
+}
+
+function pickVoice(lang, wantFemale){
+  const voices = ttsVoices.length ? ttsVoices : (speechSynthesis.getVoices ? speechSynthesis.getVoices() : []);
+  if(!voices.length) return null;
+  let pool = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(lang));
+  if(!pool.length) pool = voices;
+  // Prefer high-quality "Online (Natural)" / Neural voices (Edge/Azure, Google) over classic robotic ones
+  const naturalRe = /online.*natural|neural|natural/i;
+  const natural = pool.filter(v => naturalRe.test(v.name));
+  if(natural.length) pool = natural;
+  const genderRe = wantFemale ? /female|zira|salma|laila|layla|hala|samantha|amira|aria/i : /male|majed|hamed|omar|daniel|fred|tarik|guy/i;
+  const byGender = pool.filter(v => genderRe.test(v.name));
+  return byGender[0] || pool[0] || voices[0];
+}
+function speakTurn(text, opts){
+  return new Promise(resolve=>{
+    if(!text){ resolve(); return; }
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = opts.lang;
+    u.pitch = opts.pitch;
+    u.rate = opts.rate;
+    const v = pickVoice(opts.lang, opts.female);
+    if(v) u.voice = v;
+    u.onend = resolve;
+    u.onerror = resolve;
     speechSynthesis.speak(u);
-  }catch(e){}
+  });
+}
+async function toggleVoice(){
+  const btn = document.getElementById('voiceBtn');
+  if(!('speechSynthesis' in window)) return;
+  if(btn.classList.contains('playing')){
+    speechSynthesis.cancel();
+    btn.classList.remove('playing');
+    return;
+  }
+  speechSynthesis.cancel();
+  btn.classList.add('playing');
+  const lang = arabicMode ? 'ar' : 'en';
+  try{
+    // Voice 1 — the question, a second, separate voice/tone
+    if(lastUserText) await speakTurn(lastUserText, { lang, pitch:0.85, rate:1.0, female:false });
+    // Voice 2 — Layla's reply, same soft pitch/rate as the original build
+    await speakTurn(lastReplyText || '', { lang, pitch:1.02, rate:0.98, female:true });
+  } finally {
+    btn.classList.remove('playing');
+  }
 }
 
 /* Drag rails */
