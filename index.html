@@ -1009,31 +1009,66 @@ function toggleLang(){
   document.getElementById('chatInput').placeholder = arabicMode ? 'اسأل بالريال العماني — الميزانية، إيجار أو شراء، العائد…' : 'Ask in rials — budget, rent vs buy, yield…';
 }
 
+const VOICE_CACHE = {};
 function pickVoice(lang, wantFemale){
+  const cacheKey = lang+'|'+wantFemale;
+  if(VOICE_CACHE[cacheKey]) return VOICE_CACHE[cacheKey];
   const voices = ttsVoices.length ? ttsVoices : (speechSynthesis.getVoices ? speechSynthesis.getVoices() : []);
   if(!voices.length) return null;
   let pool = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(lang));
   if(!pool.length) pool = voices;
-  // Prefer high-quality "Online (Natural)" / Neural voices (Edge/Azure, Google) over classic robotic ones
-  const naturalRe = /online.*natural|neural|natural/i;
-  const natural = pool.filter(v => naturalRe.test(v.name));
-  if(natural.length) pool = natural;
-  const genderRe = wantFemale ? /female|zira|salma|laila|layla|hala|samantha|amira|aria/i : /male|majed|hamed|omar|daniel|fred|tarik|guy/i;
-  const byGender = pool.filter(v => genderRe.test(v.name));
-  return byGender[0] || pool[0] || voices[0];
+  const genderRe = wantFemale
+    ? /female|zira|salma|laila|layla|hala|samantha|amira|aria|jenny|hoda|zariyah|ghazal|emma|olivia|sara|susan|karen|moira|tessa/i
+    : /male|majed|hamed|omar|daniel|fred|tarik|guy|naayf|david|mark|ryan|george/i;
+  // Rank each candidate — cloud/neural engines first, then the right gender, then non-local (usually richer) voices
+  const score = v => {
+    let s = 0;
+    if(/online.*natural|neural|natural|premium|enhanced/i.test(v.name)) s += 6;
+    if(genderRe.test(v.name)) s += 3;
+    if(v.localService === false) s += 1;
+    return s;
+  };
+  const best = [...pool].sort((a,b) => score(b)-score(a))[0] || voices[0];
+  VOICE_CACHE[cacheKey] = best;
+  return best;
+}
+// Break a reply into natural phrase-sized chunks so pacing has room to breathe,
+// instead of one flat, rushed utterance — closer to how Ali/Layla sound in the intro.
+function speechChunks(text){
+  const cleaned = (text||'').replace(/—/g, ', ').replace(/\s+/g, ' ').trim();
+  const sentences = cleaned.match(/[^.!?…]+[.!?…]*/g) || [cleaned];
+  const chunks = [];
+  sentences.forEach(s=>{
+    s.split(/,\s*/).reduce((acc, part, i, arr)=>{
+      chunks.push(i < arr.length-1 ? part+',' : part);
+      return acc;
+    }, null);
+  });
+  return chunks.map(c=>c.trim()).filter(Boolean);
 }
 function speakTurn(text, opts){
   return new Promise(resolve=>{
-    if(!text){ resolve(); return; }
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = opts.lang;
-    u.pitch = opts.pitch;
-    u.rate = opts.rate;
+    const chunks = speechChunks(text);
+    if(!chunks.length){ resolve(); return; }
     const v = pickVoice(opts.lang, opts.female);
-    if(v) u.voice = v;
-    u.onend = resolve;
-    u.onerror = resolve;
-    speechSynthesis.speak(u);
+    let i = 0;
+    const next = ()=>{
+      if(i >= chunks.length){ resolve(); return; }
+      const chunk = chunks[i];
+      const u = new SpeechSynthesisUtterance(chunk);
+      u.lang = opts.lang === 'ar' ? 'ar-SA' : 'en-US';
+      // Tiny natural drift in pitch/rate per phrase — a flat, identical value on every
+      // chunk is what makes machine speech sound robotic; real speech never repeats exactly.
+      u.pitch = opts.pitch + (Math.random()*0.06 - 0.03);
+      u.rate = opts.rate + (Math.random()*0.05 - 0.025);
+      u.volume = 1;
+      if(v) u.voice = v;
+      const advance = ()=>{ i++; setTimeout(next, /[.!?…]$/.test(chunk) ? 260 : 110); };
+      u.onend = advance;
+      u.onerror = advance;
+      speechSynthesis.speak(u);
+    };
+    next();
   });
 }
 async function toggleVoice(){
@@ -1044,14 +1079,13 @@ async function toggleVoice(){
     btn.classList.remove('playing');
     return;
   }
+  if(!lastReplyText) return;
   speechSynthesis.cancel();
   btn.classList.add('playing');
   const lang = arabicMode ? 'ar' : 'en';
   try{
-    // Voice 1 — the question, a second, separate voice/tone
-    if(lastUserText) await speakTurn(lastUserText, { lang, pitch:0.85, rate:1.0, female:false });
-    // Voice 2 — Layla's reply, same soft pitch/rate as the original build
-    await speakTurn(lastReplyText || '', { lang, pitch:1.02, rate:0.98, female:true });
+    // Speak only Layla's reply, warm and unhurried — the same natural tone she opens the desk with.
+    await speakTurn(lastReplyText, { lang, pitch:1.03, rate:0.95, female:true });
   } finally {
     btn.classList.remove('playing');
   }
