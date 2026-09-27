@@ -1023,9 +1023,16 @@ function pickVoice(lang, wantFemale){
   // Rank each candidate — cloud/neural engines first, then the right gender, then non-local (usually richer) voices
   const score = v => {
     let s = 0;
-    if(/online.*natural|neural|natural|premium|enhanced/i.test(v.name)) s += 6;
-    if(genderRe.test(v.name)) s += 3;
-    if(v.localService === false) s += 1;
+    // Tier 1: true neural/cloud voices (Edge's "Online (Natural)" Azure voices, or any
+    // engine that labels itself neural/premium) — closest to the recorded intro lines.
+    if(/online.*natural|neural|premium|enhanced/i.test(v.name)) s += 8;
+    // Tier 2: other cloud-served voices (e.g. Chrome's "Google US English" family) —
+    // not neural, but noticeably warmer than the old offline desktop voices below.
+    else if(v.localService === false) s += 4;
+    // Tier 0 (penalised): classic offline "Desktop" SAPI voices — the most robotic option,
+    // and Chrome's default fallback on Windows when nothing better is installed.
+    if(/desktop/i.test(v.name)) s -= 3;
+    if(genderRe.test(v.name)) s += 2;
     return s;
   };
   const best = [...pool].sort((a,b) => score(b)-score(a))[0] || voices[0];
